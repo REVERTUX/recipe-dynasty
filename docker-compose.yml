@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  postgres:
+    image: postgres:latest
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=recipe
+      - POSTGRES_PASSWORD=recipe
+      - POSTGRES_DB=recipe
+    ports:
+      - "5432:5432"

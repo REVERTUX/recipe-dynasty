@@ -49,9 +49,23 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    Favorite      Favorite[]
-    Recipe        Recipe[]
-    Review        Review[]
+    favorite      Favorite[]
+    recipe        Recipe[]
+    review        Review[]
+    userRole      UserRole[]
+}
+
+model UserRole {
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+    role   Role
+
+    @@unique([userId, role])
+}
+
+enum Role {
+    ADMIN
+    MEMBER
 }
 
 model VerificationToken {
@@ -69,18 +83,17 @@ model Recipe {
     creationDate DateTime         @default(now())
     servings     Int
     rating       Float?
-    calories     Float
-    imageId      String?
+    calories     Float?
+    imageUrl     String?
     userId       String
-    steps        String
     cookingTime  CookingTime?
-    Favorite     Favorite[]
+    favorite     Favorite[]
     nutrients    Nutrients?
-    image        File?            @relation(fields: [imageId], references: [id])
+    // image        File?            @relation(fields: [imageId], references: [id])
     user         User             @relation(fields: [userId], references: [id])
     categories   RecipeCategory[]
     reviews      Review[]
-    step         Step[]
+    steps        RecipeSteps[]
 
     @@index([id])
     @@index([title, description])
@@ -108,7 +121,7 @@ model CookingTime {
 
 model Category {
     name           String           @id
-    RecipeCategory RecipeCategory[]
+    recipeCategory RecipeCategory[]
 }
 
 model RecipeCategory {
@@ -123,9 +136,9 @@ model RecipeCategory {
 
 model Nutrients {
     id       String @id @default(cuid())
-    fat      Float
-    protein  Float
-    carbs    Float
+    fat      Float?
+    protein  Float?
+    carbs    Float?
     recipeId String @unique
     recipe   Recipe @relation(fields: [recipeId], references: [id])
 
@@ -142,21 +155,21 @@ model Favorite {
     @@index([recipeId, userId])
 }
 
-model File {
-    id       String   @id @default(cuid())
-    filename String
-    path     String
-    mimetype String
-    Recipe   Recipe[]
+// model File {
+//     id       String   @id @default(cuid())
+//     filename String
+//     path     String
+//     mimetype String
+//     Recipe   Recipe[]
 
-    @@index([id])
-}
+//     @@index([id])
+// }
 
-model Step {
+model RecipeSteps {
     recipeId String
     steps    String
-    Recipe   Recipe @relation(fields: [recipeId], references: [id])
+    recipe   Recipe @relation(fields: [recipeId], references: [id])
 
-    @@index([recipeId])
     @@unique([recipeId])
+    @@index([recipeId])
 }
