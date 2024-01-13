@@ -1,18 +1,16 @@
 'use client';
 
-import { Suspense, useRef } from 'react';
-import { useFormState } from 'react-dom';
-import dynamic from 'next/dynamic';
+import { useRef } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
+import { Button } from 'flowbite-react';
 
 import { createRecipe } from '@/app/lib/recipe/actions';
 import { type CreateRecipeState } from '@/app/lib/recipe/shema';
 
-import BasicInfoForm from './BasicInfoForm';
 import { contetntMarkdown } from './editorContentTemplate';
-import { Button } from 'flowbite-react';
-
-const Editor = dynamic(() => import('./Editor'), { ssr: false });
+import BasicInfoForm from './BasicInfoForm';
+import Editor from './Editor';
 
 function CreateForm() {
   const initialState = { message: '', error: {} };
@@ -37,13 +35,21 @@ function CreateForm() {
     >
       <h2 className="text-3xl">Create new recipe</h2>
       <BasicInfoForm state={state} />
-      <Suspense fallback={null}>
-        <Editor markdown={contetntMarkdown} editorRef={editorRef} />
-      </Suspense>
+      <Editor markdown={contetntMarkdown} editorRef={editorRef} />
       <p className="py-2 text-red-600">{state.message}</p>
-      <Button type="submit">Create Recipe</Button>
+      <SubmitButton />
     </form>
   );
 }
 
 export default CreateForm;
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" disabled={pending}>
+      Create Recipe
+    </Button>
+  );
+}
