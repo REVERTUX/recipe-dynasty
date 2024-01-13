@@ -6,12 +6,21 @@ import {
 import { listSchema } from './recipe.schema';
 import { CreateRecipe } from '@/app/lib/recipe/shema';
 import { z } from 'zod';
+import { allowOnlyInProduction, ratelimit } from '@/server/ratelimiter';
+import { TRPCError } from '@trpc/server';
 
 export const recipeRouter = createTRPCRouter({
   create: protectedProcedure
     .input(CreateRecipe)
     .mutation(async ({ ctx, input }) => {
       const { nutrients, cookingTime } = input;
+
+      if (allowOnlyInProduction()) {
+        const { success } = await ratelimit.createRecipe.limit(
+          ctx.session.user.id
+        );
+        if (!success) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+      }
 
       return ctx.db.recipe.create({
         data: {
