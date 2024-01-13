@@ -8,6 +8,9 @@ import { CreateRecipe } from '@/app/lib/recipe/shema';
 import { z } from 'zod';
 import { allowOnlyInProduction, ratelimit } from '@/server/ratelimiter';
 import { TRPCError } from '@trpc/server';
+import { getLogger } from '@/utils/logger';
+
+const logger = getLogger();
 
 export const recipeRouter = createTRPCRouter({
   create: protectedProcedure
@@ -19,10 +22,16 @@ export const recipeRouter = createTRPCRouter({
         const { success } = await ratelimit.createRecipe.limit(
           ctx.session.user.id
         );
-        if (!success) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+        if (!success) {
+          logger.warn('Rate limit: create recipe ', {
+            userId: ctx.session.user.id,
+          });
+          throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+        }
       }
+      logger.info('Creating recipe', { userId: ctx.session.user.id });
 
-      return ctx.db.recipe.create({
+      const recipe = await ctx.db.recipe.create({
         data: {
           title: input.title,
           description: input.description,
@@ -48,6 +57,13 @@ export const recipeRouter = createTRPCRouter({
           steps: { create: { steps: input.steps } },
         },
       });
+
+      logger.info('Created recipe', {
+        userId: ctx.session.user.id,
+        recipeId: recipe.id,
+      });
+
+      return recipe;
     }),
 
   getList: publicProcedure

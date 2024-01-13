@@ -9,6 +9,9 @@ import GoogleProvider from 'next-auth/providers/google';
 import { env } from '@/env';
 import { db } from '@/server/db';
 import { type UserRole } from '@prisma/client';
+import { getLogger } from '@/utils/logger';
+
+const logger = getLogger();
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -52,6 +55,13 @@ export const authOptions: NextAuthOptions = {
           roles: roles.map((role) => role.role),
         },
       };
+    },
+    signIn(params) {
+      logger.info('User logged', {
+        userId: params.user.id,
+        userEmail: params.profile?.email,
+      });
+      return true;
     },
   },
   adapter: PrismaAdapter(db),
