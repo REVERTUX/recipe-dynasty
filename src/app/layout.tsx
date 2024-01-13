@@ -10,6 +10,7 @@ import { ourFileRouter } from '@/app/api/uploadthing/core';
 
 import Navbar from './ui/navbar/Navbar';
 import 'flowbite';
+import { AxiomWebVitals } from 'next-axiom';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,6 +33,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+        <AxiomWebVitals />
         <Navbar />
         <TRPCReactProvider cookies={cookies().toString()}>
           {children}
