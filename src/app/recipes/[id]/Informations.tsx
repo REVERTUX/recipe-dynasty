@@ -1,5 +1,8 @@
+import FavoriteButton from '@/app/ui/recipes/FavoriteButton';
 import { api } from '@/trpc/server';
 import Image from 'next/image';
+import { BiDish } from 'react-icons/bi';
+import { LuClock } from 'react-icons/lu';
 
 interface InformationsProps {
   recipeId: string;
@@ -7,7 +10,7 @@ interface InformationsProps {
 
 async function Informations({ recipeId }: InformationsProps) {
   const {
-    // calories,
+    calories,
     // categories,
     cookingTime,
     // creationDate,
@@ -21,41 +24,44 @@ async function Informations({ recipeId }: InformationsProps) {
 
   return (
     <div className="flex flex-col gap-2 py-2">
-      <div className="max-w-full">
-        {imageUrl && (
-          <Image
-            src={imageUrl}
-            alt={'recipe image'}
-            width={1000}
-            height={500}
-            className="rounded-lg"
-          />
-        )}
-      </div>
-      <div className="flex flex-col gap-1">
-        <h1 className="text-4xl font-semibold">{title}</h1>
-        <p>{description}</p>
-        <span>Servings: {servings}</span>
-        <span>
-          <span>Cooking time:</span>
-          <span>
-            {cookingTime ? (
-              <>
-                {cookingTime.value}
-                {cookingTime.unit}
-              </>
-            ) : (
-              'none'
-            )}
-          </span>
-        </span>
-        {nutrients && (
-          <div className="flex flex-col gap-0.5">
-            <span>Protein {nutrients.protein ?? 'none'}</span>
-            <span>Carbs {nutrients.carbs ?? 'none'}</span>
-            <span>Fat {nutrients.fat ?? 'none'}</span>
+      {imageUrl && (
+        <Image
+          src={imageUrl}
+          alt={'recipe image'}
+          width={1000}
+          height={500}
+          className="rounded-lg"
+        />
+      )}
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-3xl font-bold">{title}</h1>
+          <p className="text-lg">{description}</p>
+        </div>
+        <div>
+          <div className="flex items-center gap-1">
+            <LuClock size={24} />
+            <span>
+              {cookingTime?.value}
+              {cookingTime?.unit}
+            </span>
           </div>
-        )}
+
+          <div className="flex items-center gap-1">
+            <BiDish size={24} />
+            <span>{servings}</span>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="mb-1 text-xl font-semibold">Nutrition</h3>
+          <ul>
+            <li>Protein: {`${nutrients?.protein}g` ?? 'not specified'}</li>
+            <li>Carbs: {`${nutrients?.carbs}g` ?? 'not specified'}</li>
+            <li>Fat: {`${nutrients?.fat}g` ?? 'not specified'}</li>
+            <li>Calories: {`${calories}kcal` ?? 'not specified'}</li>
+          </ul>
+        </div>
       </div>
     </div>
   );

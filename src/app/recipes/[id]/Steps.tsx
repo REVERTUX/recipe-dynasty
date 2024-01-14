@@ -13,6 +13,7 @@ async function Steps({ recipeId }: StepsProps) {
     <div className="prose max-w-full">
       <MDXRemote
         source={steps}
+        components={{ p: (props) => <p className="text-primary" {...props} /> }}
         options={{
           parseFrontmatter: true,
           mdxOptions: { remarkPlugins: [remarkGfm] },
