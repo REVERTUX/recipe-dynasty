@@ -2,19 +2,20 @@
 'use client';
 
 import { type ChangeEvent, useState, useRef } from 'react';
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-} from 'flowbite-react';
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
 
 import { useUploadThing } from '@/utils/uploadthing';
 import { cropImage } from '@/utils/cropImage';
 
 import 'react-image-crop/dist/ReactCrop.css';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 const acceptedFiletypes = ['image/jpeg', 'image/jpg', 'image/png'];
 
@@ -47,7 +48,7 @@ function ImageForm() {
 
       if (acceptedFiletypes.includes(file.type)) {
         const reader = new FileReader();
-        setIsModalOpen(true);
+        handleModalToggle(true);
         reader.addEventListener('load', () => {
           setImageName(file.name);
           setImageSrc(reader.result?.toString() ?? '');
@@ -74,6 +75,11 @@ function ImageForm() {
     });
 
     await startUpload([file]);
+  };
+
+  const handleModalToggle = (open: boolean) => {
+    if (isUploading) return;
+    setIsModalOpen(open);
   };
 
   return (
@@ -120,40 +126,45 @@ function ImageForm() {
           onChange={handleImageChange}
         />
       </label>
-      <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <ModalHeader>Resize Image</ModalHeader>
-        <ModalBody>
-          {imageSrc ? (
-            <ReactCrop
-              aspect={16 / 9}
-              keepSelection
-              minHeight={100}
-              minWidth={200}
-              maxHeight={600}
-              maxWidth={1000}
-              crop={crop}
-              onChange={(_, percent) => setCrop(percent)}
-              onComplete={(c) => setStoredCrop(c)}
+      <Dialog open={isModalOpen} onOpenChange={handleModalToggle}>
+        {/* <DialogTrigger>
+
+        </DialogTrigger> */}
+        <DialogContent>
+          <DialogTitle>Resize Image</DialogTitle>
+          <DialogDescription>
+            {imageSrc ? (
+              <ReactCrop
+                aspect={16 / 9}
+                keepSelection
+                minHeight={100}
+                minWidth={200}
+                maxHeight={600}
+                maxWidth={1000}
+                crop={crop}
+                onChange={(_, percent) => setCrop(percent)}
+                onComplete={(c) => setStoredCrop(c)}
+              >
+                <img ref={imageRef} src={imageSrc} alt="Crop me" />
+              </ReactCrop>
+            ) : (
+              <p>No image selected</p>
+            )}
+          </DialogDescription>
+          <DialogFooter className="flex justify-end gap-1">
+            <Button
+              variant="secondary"
+              onClick={() => handleModalToggle(false)}
+              disabled={isUploading}
             >
-              <img ref={imageRef} src={imageSrc} alt="Crop me" />
-            </ReactCrop>
-          ) : (
-            <p>No image selected</p>
-          )}
-        </ModalBody>
-        <ModalFooter className="flex justify-end gap-1">
-          <Button
-            color="gray"
-            onClick={() => setIsModalOpen(false)}
-            disabled={isUploading}
-          >
-            Cancel
-          </Button>
-          <Button onClick={handleImageUpload} disabled={isUploading}>
-            {isUploading ? 'Uploading...' : 'Upload'}
-          </Button>
-        </ModalFooter>
-      </Modal>
+              Cancel
+            </Button>
+            <Button onClick={handleImageUpload} disabled={isUploading}>
+              {isUploading ? 'Uploading...' : 'Upload'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
