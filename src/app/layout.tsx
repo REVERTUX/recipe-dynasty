@@ -1,16 +1,14 @@
-import '@/styles/globals.css';
-
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { extractRouterConfig } from 'uploadthing/server';
+import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
+import { AxiomWebVitals } from 'next-axiom';
 
 import { TRPCReactProvider } from '@/trpc/react';
-import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
 import { ourFileRouter } from '@/app/api/uploadthing/core';
-
-import Navbar from './ui/navbar/Navbar';
-import 'flowbite';
-import { AxiomWebVitals } from 'next-axiom';
+import { Navbar } from '@/components/navbar/navbar';
+import { ThemeProvider } from '@/components/theme-provider';
+import '@/styles/globals.css';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,12 +30,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
-        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-        <AxiomWebVitals />
-        <Navbar />
-        <TRPCReactProvider cookies={cookies().toString()}>
-          {children}
-        </TRPCReactProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+          <AxiomWebVitals />
+          <Navbar />
+          <TRPCReactProvider cookies={cookies().toString()}>
+            {children}
+          </TRPCReactProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
