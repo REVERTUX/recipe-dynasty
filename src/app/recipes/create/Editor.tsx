@@ -49,7 +49,7 @@ function Editor({ markdown, editorRef }: EditorProps) {
   return (
     <MDXEditor
       contentEditableClassName="prose max-w-full"
-      className="cursor-text"
+      className="cursor-text dark:bg-white"
       ref={editorRef}
       markdown={markdown}
       plugins={[

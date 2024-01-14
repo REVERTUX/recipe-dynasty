@@ -21,7 +21,7 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <div className="flex flex-col justify-center">
-      <div className="flex justify-center py-2 align-middle">
+      <div className="flex justify-center p-2 align-middle">
         <div className="w-full max-w-3xl">
           <Search placeholder="Search for recipes..." />
         </div>
