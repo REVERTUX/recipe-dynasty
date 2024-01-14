@@ -39,7 +39,7 @@ function Rating({ value, max }: RatingProps) {
   return (
     <div className="flex items-center">
       {renderIcons()}
-      <p className="ms-1 text-base font-medium text-gray-600">
+      <p className="ms-1 text-base font-medium text-gray-600 dark:text-gray-300">
         {value} out of {max}
       </p>
     </div>
