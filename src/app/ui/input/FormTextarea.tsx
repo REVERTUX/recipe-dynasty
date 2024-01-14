@@ -1,13 +1,10 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import type { DetailedHTMLProps, TextareaHTMLAttributes } from 'react';
 
+import { Label } from '@/components/ui/label';
 import Textarea from './Textarea';
 
 interface FormTextareaProps
-  extends DetailedHTMLProps<
-    TextareaHTMLAttributes<HTMLTextAreaElement>,
-    HTMLTextAreaElement
-  > {
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   error?: boolean;
   errorMessage?: string;
   label: string;
@@ -19,12 +16,7 @@ function FormTextarea(props: FormTextareaProps) {
   const { error, errorMessage, ...textareaProps } = props;
   return (
     <div className="w-full">
-      <label
-        htmlFor={props.id}
-        className="mb-2 block text-sm font-medium text-gray-900"
-      >
-        {props.label}
-      </label>
+      <Label htmlFor={props.id}>{props.label}</Label>
       <div className="flex">
         <Textarea {...textareaProps} />
       </div>
