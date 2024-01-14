@@ -63,7 +63,7 @@ export async function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right">
-                <div className='flex flex-col h-full justify-between'>
+                <div className="flex h-full flex-col justify-between">
                   <div className="grid gap-4 p-4">
                     <div className="flex items-center justify-between">
                       {session ? (
@@ -92,8 +92,7 @@ export async function Navbar() {
                       </Link>
                     )}
                   </div>
-                  <div className='text-right'>
-
+                  <div className="text-right">
                     <ThemeModeToggle />
                   </div>
                   {/* <Navlink
