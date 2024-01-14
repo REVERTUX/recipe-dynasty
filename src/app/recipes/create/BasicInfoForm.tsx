@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
 import FormInput from '@/app/ui/input/FormInput';
@@ -34,9 +33,7 @@ function BasicInfoForm({ state }: BasicInfoFormProps) {
         rows={4}
         required
       />
-      <Suspense fallback={null}>
-        <ImageForm />
-      </Suspense>
+      <ImageForm />
       <div className="flex flex-col gap-2 md:flex-row">
         <FormInput
           label="Time"

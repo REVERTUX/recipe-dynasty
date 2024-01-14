@@ -1,3 +1,4 @@
+import { mdxComponents } from '@/components/max-components';
 import { api } from '@/trpc/server';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
@@ -13,6 +14,7 @@ async function Steps({ recipeId }: StepsProps) {
     <div className="prose max-w-full">
       <MDXRemote
         source={steps}
+        components={mdxComponents}
         options={{
           parseFrontmatter: true,
           mdxOptions: { remarkPlugins: [remarkGfm] },
