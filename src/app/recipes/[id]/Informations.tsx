@@ -1,4 +1,3 @@
-import FavoriteButton from '@/app/ui/recipes/FavoriteButton';
 import { api } from '@/trpc/server';
 import Image from 'next/image';
 import { BiDish } from 'react-icons/bi';
