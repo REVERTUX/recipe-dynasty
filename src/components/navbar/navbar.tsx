@@ -63,13 +63,39 @@ export async function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right">
-                <div className="grid gap-4 p-4">
-                  <Navlink href="/" size="large">
-                    Home
-                  </Navlink>
-                  <Navlink href="/recipes" size="large">
-                    Recipes
-                  </Navlink>
+                <div className='flex flex-col h-full justify-between'>
+                  <div className="grid gap-4 p-4">
+                    <div className="flex items-center justify-between">
+                      {session ? (
+                        <>
+                          <AvatarMenu user={session.user} />
+                        </>
+                      ) : (
+                        <Link href="/api/auth/signin">
+                          <Button>Sign In</Button>
+                        </Link>
+                      )}
+                    </div>
+                    <Navlink href="/" size="large" className="text-center">
+                      Home
+                    </Navlink>
+                    <Navlink
+                      href="/recipes"
+                      size="large"
+                      className="text-center"
+                    >
+                      Recipes
+                    </Navlink>
+                    {session && (
+                      <Link href="/recipes/create">
+                        <Button fullwidth>Create Recipe</Button>
+                      </Link>
+                    )}
+                  </div>
+                  <div className='text-right'>
+
+                    <ThemeModeToggle />
+                  </div>
                   {/* <Navlink
                     href="#"
                   >
@@ -81,9 +107,6 @@ export async function Navbar() {
                   >
                     Favorites
                   </Navlink> */}
-                  <Link href="/api/auth/signin">
-                    <Button fullwidth>Sign In</Button>
-                  </Link>
                 </div>
               </SheetContent>
             </Sheet>
