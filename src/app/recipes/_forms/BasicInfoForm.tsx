@@ -3,14 +3,17 @@ import dynamic from 'next/dynamic';
 import FormInput from '@/app/ui/input/FormInput';
 import FormTextarea from '@/app/ui/input/FormTextarea';
 import { type CreateRecipeState } from '@/app/lib/recipe/shema';
+import { type inferRouterOutputs } from '@trpc/server';
+import { type AppRouter } from '@/server/api/root';
 
 const ImageForm = dynamic(() => import('./ImageForm'), { ssr: true });
 
 interface BasicInfoFormProps {
   state: CreateRecipeState;
+  recipe?: inferRouterOutputs<AppRouter>['recipe']['getOne'];
 }
 
-function BasicInfoForm({ state }: BasicInfoFormProps) {
+function BasicInfoForm({ state, recipe }: BasicInfoFormProps) {
   return (
     <>
       <FormInput
@@ -21,6 +24,7 @@ function BasicInfoForm({ state }: BasicInfoFormProps) {
         placeholder="Title..."
         error={!!state.errors?.title}
         errorMessage={state.errors?.title?.join('. ')}
+        defaultValue={recipe?.title}
         required
       />
       <FormTextarea
@@ -31,6 +35,7 @@ function BasicInfoForm({ state }: BasicInfoFormProps) {
         error={!!state.errors?.description}
         errorMessage={state.errors?.description?.join('. ')}
         rows={4}
+        defaultValue={recipe?.description}
         required
       />
       <ImageForm />
@@ -45,6 +50,7 @@ function BasicInfoForm({ state }: BasicInfoFormProps) {
           rightAdornment="hour(s)"
           error={!!state.errors?.cookingTime}
           errorMessage={state.errors?.cookingTime?.join('. ')}
+          defaultValue={recipe?.cookingTime?.value}
         />
         <FormInput
           label="Servings"
@@ -56,18 +62,19 @@ function BasicInfoForm({ state }: BasicInfoFormProps) {
           required
           error={!!state.errors?.servings}
           errorMessage={state.errors?.servings?.join('. ')}
+          defaultValue={recipe?.servings}
         />
         <FormInput
           label="Calories"
           type="number"
           id="calories"
           name="calories"
-          className="block w-full min-w-0 flex-1 rounded-none rounded-s-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           placeholder="Calories..."
           min={0}
           rightAdornment="kcal"
           error={!!state.errors?.calories}
           errorMessage={state.errors?.calories?.join('. ')}
+          defaultValue={recipe?.calories ?? undefined}
         />
       </div>
       <div className="flex flex-col gap-2 md:flex-row">
@@ -78,6 +85,7 @@ function BasicInfoForm({ state }: BasicInfoFormProps) {
           name="carbs"
           placeholder="Carbs..."
           min={0}
+          defaultValue={recipe?.nutrients?.carbs ?? undefined}
         />
         <FormInput
           label="Protein"
@@ -86,6 +94,7 @@ function BasicInfoForm({ state }: BasicInfoFormProps) {
           name="protein"
           placeholder="Protein..."
           min={0}
+          defaultValue={recipe?.nutrients?.protein ?? undefined}
         />
         <FormInput
           label="Fat"
@@ -94,6 +103,7 @@ function BasicInfoForm({ state }: BasicInfoFormProps) {
           name="fat"
           placeholder="Fat..."
           min={0}
+          defaultValue={recipe?.nutrients?.fat ?? undefined}
         />
       </div>
     </>

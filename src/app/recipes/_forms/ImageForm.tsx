@@ -19,7 +19,11 @@ import { Button } from '@/components/ui/button';
 
 const acceptedFiletypes = ['image/jpeg', 'image/jpg', 'image/png'];
 
-function ImageForm() {
+interface ImageFormProps {
+  url?: string;
+}
+
+function ImageForm({ url }: ImageFormProps) {
   const [crop, setCrop] = useState<Crop>({
     width: 100,
     height: 50,
@@ -29,7 +33,7 @@ function ImageForm() {
   });
   const [storedCrop, setStoredCrop] = useState<PixelCrop>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(url);
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
   const [imageName, setImageName] = useState<string>('');
   const imageRef = useRef<HTMLImageElement>(null);
