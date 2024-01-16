@@ -156,7 +156,7 @@ export const recipeRouter = createTRPCRouter({
         skip,
         take,
         orderBy: { creationDate: 'desc' },
-        where: { title: { contains: search } },
+        where: { title: { contains: search, mode: 'insensitive' } },
         include: {
           categories: true,
           nutrients: true,
@@ -166,7 +166,7 @@ export const recipeRouter = createTRPCRouter({
       });
 
       const count = await ctx.db.recipe.count({
-        where: { title: { contains: search } },
+        where: { title: { contains: search, mode: 'insensitive' } },
       });
 
       return { data, count };
