@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { type CreateRecipeState, CreateRecipe } from './shema';
+import { type CreateRecipeState, CreateRecipe, EditRecipe } from './shema';
 import { api } from '@/trpc/server';
 
 export async function createRecipe(
@@ -37,7 +37,49 @@ export async function createRecipe(
     await api.recipe.create.mutate(validatedFields.data);
   } catch (error: unknown) {
     return {
-      message: 'Database Error: Failed to Create recipe',
+      message: 'Database Error: Failed to create recipe',
+    };
+  }
+
+  revalidatePath('/recipes');
+  redirect('/recipes');
+}
+
+export async function editRecipe(
+  prevState: CreateRecipeState,
+  formData: FormData,
+  id: string,
+  markdown: string | undefined
+): Promise<CreateRecipeState> {
+  const validatedFields = EditRecipe.safeParse({
+    id,
+    title: formData.get('title'),
+    description: formData.get('description'),
+    imageUrl: formData.get('imageUrl') ?? undefined,
+    servings: formData.get('servings'),
+    calories: formData.get('calories'),
+    cookingTime: { value: formData.get('time'), unit: 'h' },
+    nutrients: {
+      fat: formData.get('fat'),
+      protein: formData.get('protein'),
+      carbs: formData.get('carbs'),
+    },
+    categories: [],
+    steps: markdown,
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to edit recipe',
+    };
+  }
+
+  try {
+    await api.recipe.update.mutate(validatedFields.data);
+  } catch (error: unknown) {
+    return {
+      message: 'Database Error: Failed to edit recipe',
     };
   }
 

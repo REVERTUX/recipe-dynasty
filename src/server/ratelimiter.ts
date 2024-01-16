@@ -17,6 +17,14 @@ export const ratelimit = {
     prefix: 'ratelimit:createRecipe',
     limiter: Ratelimit.slidingWindow(1, '1m'),
   }),
+  // allows 8 request per 1 minute
+  editRecipe: new Ratelimit({
+    redis,
+    analytics: true,
+    ephemeralCache: cache,
+    prefix: 'ratelimit:editRecipe',
+    limiter: Ratelimit.slidingWindow(8, '1m'),
+  }),
 };
 
 export function allowOnlyInProduction() {
