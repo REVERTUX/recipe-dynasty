@@ -93,8 +93,11 @@ export const recipeRouter = createTRPCRouter({
         throw new TRPCError({ code: 'NOT_FOUND' });
       }
 
-      if (recipeExist.userId !== userId) {
-        logger.error('User tried to edit recipe he do not have rights', {
+      if (
+        recipeExist.userId !== userId &&
+        !ctx.session.user.roles.includes('ADMIN')
+      ) {
+        logger.error('User tried to edit recipe he do not have rights to', {
           userId: userId,
           recipeId,
         });

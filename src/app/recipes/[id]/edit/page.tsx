@@ -14,7 +14,10 @@ export default async function Page({ params: { id } }: PageProps) {
   const recipe = await api.recipe.getOne.query({ id });
   const { steps } = await api.recipe.getStep.query({ id });
 
-  if (session?.user.id !== recipe.userId) {
+  if (
+    session?.user.id !== recipe.userId &&
+    !session?.user.roles.includes('ADMIN')
+  ) {
     redirect(`/recipes/${id}`);
   }
 
