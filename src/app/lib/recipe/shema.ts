@@ -53,3 +53,8 @@ export const CreateRecipe = RecipeShema.omit({
   favorite: true,
   rating: true,
 }).extend({ steps: z.string() });
+
+export const EditRecipe = RecipeShema.omit({
+  rating: true,
+  favorite: true,
+}).extend({ steps: z.string() });

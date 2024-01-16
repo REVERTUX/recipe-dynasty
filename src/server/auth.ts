@@ -24,13 +24,13 @@ declare module 'next-auth' {
     user: {
       id: string;
       // ...other properties
-      roles: UserRole[];
+      roles: UserRole['role'][];
     } & DefaultSession['user'];
   }
 
   interface User {
     // ...other properties
-    roles: UserRole[];
+    roles: UserRole['role'][];
   }
 }
 

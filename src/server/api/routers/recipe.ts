@@ -4,7 +4,7 @@ import {
   publicProcedure,
 } from '@/server/api/trpc';
 import { listSchema } from './recipe.schema';
-import { CreateRecipe } from '@/app/lib/recipe/shema';
+import { CreateRecipe, EditRecipe } from '@/app/lib/recipe/shema';
 import { z } from 'zod';
 import { allowOnlyInProduction, ratelimit } from '@/server/ratelimiter';
 import { TRPCError } from '@trpc/server';
@@ -23,7 +23,7 @@ export const recipeRouter = createTRPCRouter({
           ctx.session.user.id
         );
         if (!success) {
-          logger.warn('Rate limit: create recipe ', {
+          logger.warn('Rate limit: create recipe', {
             userId: ctx.session.user.id,
           });
           throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
@@ -66,6 +66,89 @@ export const recipeRouter = createTRPCRouter({
       return recipe;
     }),
 
+  update: protectedProcedure
+    .input(EditRecipe)
+    .mutation(async ({ ctx, input }) => {
+      const { nutrients, cookingTime } = input;
+
+      const recipeId = input.id;
+      const userId = ctx.session.user.id;
+
+      if (allowOnlyInProduction()) {
+        const { success } = await ratelimit.editRecipe.limit(userId);
+        if (!success) {
+          logger.warn('Rate limit: create recipe', {
+            userId: userId,
+          });
+          throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+        }
+      }
+
+      const recipeExist = await ctx.db.recipe.findFirst({
+        where: { id: { equals: recipeId } },
+        select: { userId: true },
+      });
+
+      if (!recipeExist) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
+
+      if (
+        recipeExist.userId !== userId &&
+        !ctx.session.user.roles.includes('ADMIN')
+      ) {
+        logger.error('User tried to edit recipe he do not have rights to', {
+          userId: userId,
+          recipeId,
+        });
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      logger.info('Editing recipe', {
+        userId: userId,
+        recipeId,
+      });
+
+      const recipe = await ctx.db.recipe.update({
+        data: {
+          title: input.title,
+          description: input.description,
+          calories: input.calories,
+          servings: input.servings,
+          imageUrl: input.imageUrl,
+          // categories: {
+          //   createMany: {
+          //     data: input.categories.map((category) => ({ TODO: handle categories
+          //       categoryName: category,
+          //     })),
+          //   },
+          // },
+          cookingTime: {
+            update: {
+              ...cookingTime,
+            },
+          },
+          nutrients: {
+            update: { ...nutrients },
+          },
+          steps: {
+            update: {
+              data: { steps: input.steps },
+              where: { recipeId: recipeId },
+            },
+          },
+        },
+        where: { id: recipeId },
+      });
+
+      logger.info('Edited recipe', {
+        userId: userId,
+        recipeId: recipe.id,
+      });
+
+      return recipe;
+    }),
+
   getList: publicProcedure
     .input(listSchema)
     .query(async ({ ctx, input: { search, skip, take } }) => {
@@ -95,9 +178,11 @@ export const recipeRouter = createTRPCRouter({
       return ctx.db.recipe.findFirstOrThrow({
         where: { id: { equals: id } },
         include: {
-          categories: true,
-          nutrients: true,
-          cookingTime: true,
+          categories: {
+            select: { category: true, categoryName: true, id: true },
+          },
+          nutrients: { select: { carbs: true, fat: true, protein: true } },
+          cookingTime: { select: { unit: true, value: true } },
         },
       });
     }),
