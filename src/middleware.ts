@@ -3,10 +3,10 @@ import { type NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   const cspHeader = `
-    default-src 'self';
+    default-src 'self' '*.google.com' 'unsafe-inline' 'unsafe-eval';
     script-src 'self' ${
       process.env.NODE_ENV === 'production'
-        ? `'strict-dynamic''nonce-${nonce}'`
+        ? `'strict-dynamic' 'nonce-${nonce}'`
         : "'unsafe-inline' 'unsafe-eval'"
     };
     style-src 'self' 'nonce-${nonce}';
@@ -15,7 +15,6 @@ export function middleware(request: NextRequest) {
     connect-src 'self';
     object-src 'none';
     base-uri 'self';
-    form-action 'self';
     frame-ancestors 'none';
     block-all-mixed-content;
     upgrade-insecure-requests;
