@@ -12,7 +12,7 @@ interface EditLinkProps {
 
 async function EditLink({ recipeId }: EditLinkProps) {
   const session = await getServerAuthSession();
-  const locale = getCurrentLocale()
+  const locale = getCurrentLocale();
 
   const recipe = await db.recipe.findFirst({
     where: { id: { equals: recipeId } },
