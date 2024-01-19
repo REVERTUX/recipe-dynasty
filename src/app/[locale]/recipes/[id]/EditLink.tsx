@@ -4,6 +4,7 @@ import { MdEdit } from 'react-icons/md';
 import { getServerAuthSession } from '@/server/auth';
 import { db } from '@/server/db';
 import { Button } from '@/components/ui/button';
+import { getCurrentLocale } from '@/app/locales/server';
 
 interface EditLinkProps {
   recipeId: string;
@@ -11,6 +12,7 @@ interface EditLinkProps {
 
 async function EditLink({ recipeId }: EditLinkProps) {
   const session = await getServerAuthSession();
+  const locale = getCurrentLocale()
 
   const recipe = await db.recipe.findFirst({
     where: { id: { equals: recipeId } },
@@ -27,7 +29,7 @@ async function EditLink({ recipeId }: EditLinkProps) {
 
   return (
     <div className="flex justify-end">
-      <Link href={`/recipes/${recipeId}/edit`}>
+      <Link href={`/${locale}/recipes/${recipeId}/edit`}>
         <Button variant="ghost" className="hover:dark:bg-slate-700">
           <MdEdit size={24} />
         </Button>
