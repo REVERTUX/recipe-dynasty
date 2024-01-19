@@ -1,0 +1,37 @@
+export default {
+  navigation: {
+    home: 'Strona główna',
+    recipes: 'Przepisy',
+    createRecipe: 'Stwórz przepis',
+    title: 'Dynastia Przepisów',
+    signIn: 'Zaloguj się',
+    signOut: 'Wyloguj się',
+    light: 'Tryb jasny',
+    dark: 'Ciemny motyw',
+    system: 'Użyj trybu urządzenia',
+  },
+  recipes: {
+    search: 'Wyszukaj przepis...',
+  },
+  recipe: {
+    createTitle: 'Stwórz przepis',
+    create: 'Stwórz',
+    editTitle: 'Zaaktualizuj przepis',
+    edit: 'Zaaktualizuj',
+    title: 'Tytuł',
+    description: 'Opis',
+    time: 'Czas',
+    servings: 'Porcje',
+    calories: 'Kalorie',
+    nutrients: 'Składniki odżywcze',
+    carbs: 'Węglowodany',
+    protein: 'Białko',
+    fat: 'Tłuszcze',
+    hours: 'godzina(y)',
+    uploadImage: {
+      upload: 'Kliknij, aby przesłać obraz',
+      uploaded: 'Przesłany obraz',
+      files: 'Obraz PNG lub JPG',
+    },
+  },
+} as const;

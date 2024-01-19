@@ -11,6 +11,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import("next").NextConfig} */
 const config = {
+  transpilePackages: ['next-international', 'international-types'],
   images: {
     remotePatterns: [
       {

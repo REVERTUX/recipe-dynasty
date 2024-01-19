@@ -1,4 +1,10 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest } from 'next/server';
+import { createI18nMiddleware } from 'next-international/middleware';
+
+const I18nMiddleware = createI18nMiddleware({
+  locales: ['en', 'pl'],
+  defaultLocale: 'pl',
+});
 
 export function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
@@ -24,19 +30,10 @@ export function middleware(request: NextRequest) {
     .replace(/\s{2,}/g, ' ')
     .trim();
 
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-nonce', nonce);
+  const response = I18nMiddleware(request);
 
-  requestHeaders.set(
-    'Content-Security-Policy',
-    contentSecurityPolicyHeaderValue
-  );
+  response.headers.set('x-nonce', nonce);
 
-  const response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
   response.headers.set(
     'Content-Security-Policy',
     contentSecurityPolicyHeaderValue

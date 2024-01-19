@@ -1,3 +1,4 @@
+import { getScopedI18n } from '@/app/locales/server';
 import { api } from '@/trpc/server';
 import Image from 'next/image';
 import { BiDish } from 'react-icons/bi';
@@ -20,6 +21,8 @@ async function Informations({ recipeId }: InformationsProps) {
     servings,
     title,
   } = await api.recipe.getOne.query({ id: recipeId });
+
+  const t = await getScopedI18n('recipe');
 
   return (
     <div className="flex flex-col gap-2 py-2">
@@ -53,12 +56,20 @@ async function Informations({ recipeId }: InformationsProps) {
         </div>
 
         <div>
-          <h3 className="mb-1 text-xl font-semibold">Nutrition</h3>
+          <h3 className="mb-1 text-xl font-semibold">{t('nutrients')}</h3>
           <ul>
-            <li>Protein: {`${nutrients?.protein}g` ?? 'not specified'}</li>
-            <li>Carbs: {`${nutrients?.carbs}g` ?? 'not specified'}</li>
-            <li>Fat: {`${nutrients?.fat}g` ?? 'not specified'}</li>
-            <li>Calories: {`${calories}kcal` ?? 'not specified'}</li>
+            <li>
+              {t('protein')}: {`${nutrients?.protein}g` ?? 'not specified'}
+            </li>
+            <li>
+              {t('carbs')}: {`${nutrients?.carbs}g` ?? 'not specified'}
+            </li>
+            <li>
+              {t('fat')}: {`${nutrients?.fat}g` ?? 'not specified'}
+            </li>
+            <li>
+              {t('calories')}: {`${calories}kcal` ?? 'not specified'}
+            </li>
           </ul>
         </div>
       </div>

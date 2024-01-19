@@ -1,0 +1,37 @@
+export default {
+  navigation: {
+    home: 'Home',
+    recipes: 'Recipes',
+    createRecipe: 'Create recipe',
+    title: 'Recipe Dynasty',
+    signIn: 'Sign In',
+    signOut: 'Sign Out',
+    light: 'Light',
+    dark: 'Dark',
+    system: 'System',
+  },
+  recipes: {
+    search: 'Search for recipe...',
+  },
+  recipe: {
+    createTitle: 'Create Recipe',
+    create: 'Create',
+    editTitle: 'Update Recipe',
+    edit: 'Update',
+    title: 'Title',
+    description: 'Description',
+    time: 'Time',
+    servings: 'Servings',
+    calories: 'Calories',
+    nutrients: 'Nutrients',
+    carbs: 'Carbs',
+    protein: 'Protein',
+    fat: 'Fat',
+    hours: 'hour(s)',
+    uploadImage: {
+      upload: 'Click to upload',
+      uploaded: 'Image uploaded',
+      files: 'PNG orJPG file',
+    },
+  },
+} as const;

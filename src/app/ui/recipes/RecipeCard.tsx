@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import { LuClock } from 'react-icons/lu';
@@ -7,7 +7,6 @@ import { BiDish } from 'react-icons/bi';
 
 import { type inferRouterOutputs } from '@trpc/server';
 import { type AppRouter } from '@/server/api/root';
-import FavoriteButton from './FavoriteButton';
 import {
   Card,
   CardContent,
@@ -17,16 +16,18 @@ import {
 } from '@/components/ui/card';
 import Rating from '../Rating';
 
+const FavoriteButton = dynamic(() => import('./FavoriteButton'));
+
 interface RecipeCardProps {
   recipe: inferRouterOutputs<AppRouter>['recipe']['getList']['data'][number];
 }
 
-function RecipeCard({
+async function RecipeCard({
   recipe: { cookingTime, description, id, rating, servings, title, imageUrl },
 }: RecipeCardProps) {
   return (
     <Card className="flex w-full max-w-3xl cursor-pointer flex-col justify-center shadow-md transition-shadow hover:shadow-2xl">
-      <Link href={`/recipes/${id}`} prefetch>
+      <Link href={`recipes/${id}`}>
         {imageUrl && (
           <div className="relative h-96 w-full">
             <Image src={imageUrl} alt={title} className="rounded-t-md" fill />

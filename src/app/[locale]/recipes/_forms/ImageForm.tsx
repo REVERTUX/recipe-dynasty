@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { useScopedI18n } from '@/app/locales/client';
 
 const acceptedFiletypes = ['image/jpeg', 'image/jpg', 'image/png'];
 
@@ -43,6 +44,7 @@ function ImageForm({ url }: ImageFormProps) {
       setIsModalOpen(false);
     },
   });
+  const t = useScopedI18n('recipe.uploadImage');
 
   const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
@@ -112,13 +114,15 @@ function ImageForm({ url }: ImageFormProps) {
                 />
               </svg>
               <p className="mb-2 text-sm text-gray-500">
-                <span className="font-semibold">Click to upload</span>
+                <span className="font-semibold">{t('upload')}</span>
               </p>
-              <p className="text-xs text-gray-500">PNG or JPG File</p>
+              <p className="text-xs text-gray-500">{t('files')}</p>
             </>
           ) : (
             <div>
-              <span className="font-semibold">Image uploaded: {imageName}</span>
+              <span className="font-semibold">
+                {t('uploaded')}: {imageName}
+              </span>
             </div>
           )}
         </div>

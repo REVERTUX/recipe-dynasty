@@ -5,6 +5,7 @@ import FormTextarea from '@/app/ui/input/FormTextarea';
 import { type CreateRecipeState } from '@/app/lib/recipe/shema';
 import { type inferRouterOutputs } from '@trpc/server';
 import { type AppRouter } from '@/server/api/root';
+import { useScopedI18n } from '@/app/locales/client';
 
 const ImageForm = dynamic(() => import('./ImageForm'), { ssr: true });
 
@@ -14,24 +15,26 @@ interface BasicInfoFormProps {
 }
 
 function BasicInfoForm({ state, recipe }: BasicInfoFormProps) {
+  const t = useScopedI18n('recipe');
+
   return (
     <>
       <FormInput
-        label="Title"
+        label={t('title')}
         type="text"
         id="title"
         name="title"
-        placeholder="Title..."
+        placeholder={`${t('title')}...`}
         error={!!state.errors?.title}
         errorMessage={state.errors?.title?.join('. ')}
         defaultValue={recipe?.title}
         required
       />
       <FormTextarea
-        label="Description"
+        label={t('description')}
         id="description"
         name="description"
-        placeholder="Description..."
+        placeholder={`${t('description')}...`}
         error={!!state.errors?.description}
         errorMessage={state.errors?.description?.join('. ')}
         rows={4}
@@ -41,23 +44,23 @@ function BasicInfoForm({ state, recipe }: BasicInfoFormProps) {
       <ImageForm />
       <div className="flex flex-col gap-2 md:flex-row">
         <FormInput
-          label="Time"
+          label={t('time')}
           type="number"
           id="time"
           name="time"
-          placeholder="Time..."
+          placeholder={`${t('time')}...`}
           min={0}
-          rightAdornment="hour(s)"
+          rightAdornment={t('hours')}
           error={!!state.errors?.cookingTime}
           errorMessage={state.errors?.cookingTime?.join('. ')}
           defaultValue={recipe?.cookingTime?.value}
         />
         <FormInput
-          label="Servings"
+          label={t('servings')}
           type="number"
           id="servings"
           name="servings"
-          placeholder="Servings..."
+          placeholder={`${t('servings')}...`}
           min={0}
           required
           error={!!state.errors?.servings}
@@ -65,11 +68,11 @@ function BasicInfoForm({ state, recipe }: BasicInfoFormProps) {
           defaultValue={recipe?.servings}
         />
         <FormInput
-          label="Calories"
+          label={t('calories')}
           type="number"
           id="calories"
           name="calories"
-          placeholder="Calories..."
+          placeholder={`${t('calories')}...`}
           min={0}
           rightAdornment="kcal"
           error={!!state.errors?.calories}
@@ -79,29 +82,29 @@ function BasicInfoForm({ state, recipe }: BasicInfoFormProps) {
       </div>
       <div className="flex flex-col gap-2 md:flex-row">
         <FormInput
-          label="Carbs"
+          label={t('carbs')}
           type="number"
           id="carbs"
           name="carbs"
-          placeholder="Carbs..."
+          placeholder={`${t('carbs')}...`}
           min={0}
           defaultValue={recipe?.nutrients?.carbs ?? undefined}
         />
         <FormInput
-          label="Protein"
+          label={t('protein')}
           type="number"
           id="protein"
           name="protein"
-          placeholder="Protein..."
+          placeholder={`${t('protein')}...`}
           min={0}
           defaultValue={recipe?.nutrients?.protein ?? undefined}
         />
         <FormInput
-          label="Fat"
+          label={t('fat')}
           type="number"
           id="fat"
           name="fat"
-          placeholder="Fat..."
+          placeholder={`${t('fat')}...`}
           min={0}
           defaultValue={recipe?.nutrients?.fat ?? undefined}
         />
