@@ -9,6 +9,8 @@ export default {
     light: 'Tryb jasny',
     dark: 'Ciemny motyw',
     system: 'Użyj trybu urządzenia',
+    en: 'Angielski',
+    pl: 'Polski',
   },
   recipes: {
     search: 'Wyszukaj przepis...',

@@ -9,6 +9,8 @@ export default {
     light: 'Light',
     dark: 'Dark',
     system: 'System',
+    en: 'English',
+    pl: 'Polish',
   },
   recipes: {
     search: 'Search for recipe...',
