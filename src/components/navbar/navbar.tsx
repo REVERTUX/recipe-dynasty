@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { getServerAuthSession } from '@/server/auth';
 import { Button } from '@/components/ui/button';
 import { SheetTrigger, SheetContent, Sheet } from '@/components/ui/sheet';
-import { getScopedI18n } from '@/app/locales/server';
+import { getCurrentLocale, getScopedI18n } from '@/app/locales/server';
 import AvatarMenu from './avatar-menu';
 
 const ThemeModeToggle = dynamic(() => import('./theme-mode-toggle'));
@@ -15,6 +15,7 @@ const Navlink = dynamic(() => import('./navlink'));
 export async function Navbar() {
   const session = await getServerAuthSession();
   const t = await getScopedI18n('navigation');
+  const locale = getCurrentLocale();
 
   return (
     <div className="sticky top-0 z-50 w-full bg-white shadow-md dark:bg-gray-900">
@@ -22,14 +23,14 @@ export async function Navbar() {
         <div className="flex items-center justify-between">
           <Link
             className="flex items-center text-lg font-semibold text-gray-900 dark:text-gray-100"
-            href="/"
+            href={`/${locale}`}
           >
             <img src="/logo.svg" className="mr-3 h-6 sm:h-9" alt="Logo" />
             {t('title')}
           </Link>
           <div className="hidden items-center space-x-10 md:flex">
-            <Navlink href="/">{t('home')}</Navlink>
-            <Navlink href="/recipes">{t('recipes')}</Navlink>
+            <Navlink href={`/${locale}`}> {t('home')}</Navlink>
+            <Navlink href={`/${locale}/recipes`}>{t('recipes')}</Navlink>
             {/* <Navlink
               href="#"
             >
@@ -43,7 +44,7 @@ export async function Navbar() {
             <div className="flex gap-2.5">
               {session ? (
                 <>
-                  <Link href="/recipes/create">
+                  <Link href={`/${locale}/recipes/create`}>
                     <Button>{t('createRecipe')}</Button>
                   </Link>
                   <AvatarMenu user={session.user} />
@@ -78,18 +79,22 @@ export async function Navbar() {
                         </Link>
                       )}
                     </div>
-                    <Navlink href="/" size="large" className="text-center">
+                    <Navlink
+                      href={`/${locale}`}
+                      size="large"
+                      className="text-center"
+                    >
                       {t('home')}
                     </Navlink>
                     <Navlink
-                      href="/recipes"
+                      href={`/${locale}/recipes`}
                       size="large"
                       className="text-center"
                     >
                       {t('recipes')}
                     </Navlink>
                     {session && (
-                      <Link href="/recipes/create">
+                      <Link href={`/${locale}/recipes/create`}>
                         <Button fullwidth>{t('createRecipe')}</Button>
                       </Link>
                     )}

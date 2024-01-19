@@ -7,6 +7,10 @@ const I18nMiddleware = createI18nMiddleware({
 });
 
 export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  if (['/manifest.json', '/favicon.ico', '/logo.svg'].includes(pathname))
+    return;
+
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   const cspHeader = `
     default-src 'self' '*.google.com' 'unsafe-inline' 'unsafe-eval';
@@ -15,7 +19,7 @@ export function middleware(request: NextRequest) {
         ? `'strict-dynamic' 'nonce-${nonce}'`
         : "'unsafe-inline' 'unsafe-eval'"
     };
-    style-src 'self' 'nonce-${nonce}';
+    style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https:;
     font-src 'self';
     connect-src 'self';
@@ -43,20 +47,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    {
-      source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
-      missing: [
-        { type: 'header', key: 'next-router-prefetch' },
-        { type: 'header', key: 'purpose', value: 'prefetch' },
-      ],
-    },
-  ],
+  // Matcher ignoring `/_next/` and `/api/`
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
