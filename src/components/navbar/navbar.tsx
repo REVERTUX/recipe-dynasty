@@ -1,11 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
+import { getServerAuthSession } from '@/server/auth';
 import { Button } from '@/components/ui/button';
 import { SheetTrigger, SheetContent, Sheet } from '@/components/ui/sheet';
-import { getServerAuthSession } from '@/server/auth';
+import { getScopedI18n } from '@/app/locales/server';
 import AvatarMenu from './avatar-menu';
 
 const ThemeModeToggle = dynamic(() => import('./theme-mode-toggle'));
@@ -13,6 +14,7 @@ const Navlink = dynamic(() => import('./navlink'));
 
 export async function Navbar() {
   const session = await getServerAuthSession();
+  const t = await getScopedI18n('navigation');
 
   return (
     <div className="sticky top-0 z-50 w-full bg-white shadow-md dark:bg-gray-900">
@@ -23,11 +25,11 @@ export async function Navbar() {
             href="/"
           >
             <img src="/logo.svg" className="mr-3 h-6 sm:h-9" alt="Logo" />
-            Recipe Dynasty
+            {t('title')}
           </Link>
           <div className="hidden items-center space-x-10 md:flex">
-            <Navlink href="/">Home</Navlink>
-            <Navlink href="/recipes">Recipes</Navlink>
+            <Navlink href="/">{t('home')}</Navlink>
+            <Navlink href="/recipes">{t('recipes')}</Navlink>
             {/* <Navlink
               href="#"
             >
@@ -42,13 +44,13 @@ export async function Navbar() {
               {session ? (
                 <>
                   <Link href="/recipes/create">
-                    <Button>Create Recipe</Button>
+                    <Button>{t('createRecipe')}</Button>
                   </Link>
                   <AvatarMenu user={session.user} />
                 </>
               ) : (
                 <Link href="/api/auth/signin">
-                  <Button>Sign In</Button>
+                  <Button>{t('signIn')}</Button>
                 </Link>
               )}
               <ThemeModeToggle />
@@ -72,23 +74,23 @@ export async function Navbar() {
                         </>
                       ) : (
                         <Link href="/api/auth/signin">
-                          <Button>Sign In</Button>
+                          <Button>{t('signIn')}</Button>
                         </Link>
                       )}
                     </div>
                     <Navlink href="/" size="large" className="text-center">
-                      Home
+                      {t('home')}
                     </Navlink>
                     <Navlink
                       href="/recipes"
                       size="large"
                       className="text-center"
                     >
-                      Recipes
+                      {t('recipes')}
                     </Navlink>
                     {session && (
                       <Link href="/recipes/create">
-                        <Button fullwidth>Create Recipe</Button>
+                        <Button fullwidth>{t('createRecipe')}</Button>
                       </Link>
                     )}
                   </div>

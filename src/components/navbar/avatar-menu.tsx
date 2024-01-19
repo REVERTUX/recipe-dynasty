@@ -9,15 +9,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from '../ui/dropdown-menu';
-
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { getScopedI18n } from '@/app/locales/server';
+
 const SignOut = dynamic(() => import('./sign-out'));
 
 interface AvatarMenuProps {
   user: Session['user'];
 }
 
-function AvatarMenu({ user: { name, email } }: AvatarMenuProps) {
+async function AvatarMenu({ user: { name, email } }: AvatarMenuProps) {
+  const t = await getScopedI18n('navigation');
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -33,7 +36,7 @@ function AvatarMenu({ user: { name, email } }: AvatarMenuProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <SignOut />
+          <SignOut title={t('signOut')} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

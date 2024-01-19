@@ -1,4 +1,8 @@
+import type { Metadata } from 'next';
+
 import { Separator } from '@/components/ui/separator';
+import { api } from '@/trpc/server';
+
 import Informations from './Informations';
 import Steps from './Steps';
 import EditLink from './EditLink';
@@ -6,6 +10,24 @@ import EditLink from './EditLink';
 interface PageProps {
   params: {
     id: string;
+  };
+}
+
+type Props = {
+  params: { id: string };
+  searchParams: Record<string, string | string[] | undefined>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const recipeId = params.id;
+
+  const { title, description } = await api.recipe.getOne.query({
+    id: recipeId,
+  });
+
+  return {
+    title,
+    description,
   };
 }
 

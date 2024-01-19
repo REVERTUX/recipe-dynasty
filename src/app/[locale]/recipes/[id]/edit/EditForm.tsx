@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 
 import BasicInfoForm from '../../_forms/BasicInfoForm';
 import Editor from '../../_forms/Editor';
+import { useScopedI18n } from '@/app/locales/client';
 
 interface EditFormProps {
   recipe: inferRouterOutputs<AppRouter>['recipe']['getOne'];
@@ -22,6 +23,8 @@ interface EditFormProps {
 function EditForm({ recipe, steps, recipeId }: EditFormProps) {
   const initialState = { message: '', error: {} };
   const editorRef = useRef<MDXEditorMethods | null>(null);
+
+  const t = useScopedI18n('recipe');
 
   const updateRecipeWithAdditionalInfo = async (
     state: CreateRecipeState,
@@ -45,23 +48,23 @@ function EditForm({ recipe, steps, recipeId }: EditFormProps) {
       action={dispatch}
       className="flex max-w-5xl grow flex-col gap-4 px-2 py-4"
     >
-      <h1 className="mb-4 text-4xl font-bold">Recipe editor</h1>
+      <h1 className="mb-4 text-4xl font-bold">{t('editTitle')}</h1>
       <BasicInfoForm state={state} recipe={recipe} />
       <Editor markdown={steps} editorRef={editorRef} />
       <p className="py-2 text-red-600">{state.message}</p>
-      <SubmitButton />
+      <SubmitButton content={t('edit')} />
     </form>
   );
 }
 
 export default EditForm;
 
-function SubmitButton() {
+function SubmitButton({ content }: { content: string }) {
   const { pending } = useFormStatus();
 
   return (
     <Button type="submit" disabled={pending}>
-      Update Recipe
+      {content}
     </Button>
   );
 }

@@ -2,12 +2,13 @@
 
 'use client';
 
-import Link from 'next/link';
+// import { Link, usePathname } from '@/navigation';
 import { usePathname, useSearchParams } from 'next/navigation';
 import clsx from 'clsx';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 
 import { generatePagination } from '@/app/lib/utils';
+import { Link } from 'lucide-react';
 
 interface PaginationProps {
   totalPages: number;
@@ -89,7 +90,7 @@ function PaginationNumber({
   return isActive || position === 'middle' ? (
     <div className={className}>{page}</div>
   ) : (
-    <Link href={href} className={className}>
+    <Link href={href as never} className={className}>
       {page}
     </Link>
   );
@@ -124,7 +125,7 @@ function PaginationArrow({
   return isDisabled ? (
     <div className={className}>{icon}</div>
   ) : (
-    <Link className={className} href={href}>
+    <Link className={className} href={href as never}>
       {icon}
     </Link>
   );
