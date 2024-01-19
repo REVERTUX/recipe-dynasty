@@ -1,5 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
-import RecipeCardPlaceholder from '../ui/recipes/RecipeCardPlaceholder';
+import RecipeCardPlaceholder from '../../ui/recipes/RecipeCardPlaceholder';
 
 export default function Loading() {
   return (

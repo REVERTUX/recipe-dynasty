@@ -1,7 +1,11 @@
-import Pagination from '@/app/ui/Pagination';
-import Search from '@/app/ui/Search';
+import dynamic from 'next/dynamic';
+
 import RecipeCard from '@/app/ui/recipes/RecipeCard';
 import { api } from '@/trpc/server';
+import { getScopedI18n } from '@/app/locales/server';
+
+const Search = dynamic(() => import('@/app/ui/Search'));
+const Pagination = dynamic(() => import('@/app/ui/Pagination'));
 
 interface PageProps {
   searchParams?: {
@@ -19,11 +23,13 @@ export default async function Page({ searchParams }: PageProps) {
   const take = PAGE_ITEMS_COUNT;
   const recipes = await api.recipe.getList.query({ search, take, skip });
 
+  const t = await getScopedI18n('recipes');
+
   return (
     <div className="flex flex-col justify-center">
       <div className="flex justify-center p-2 align-middle">
         <div className="w-full max-w-3xl">
-          <Search placeholder="Search for recipes..." />
+          <Search placeholder={t('search')} />
         </div>
       </div>
       <div className="max-w-xs flex-shrink"></div>

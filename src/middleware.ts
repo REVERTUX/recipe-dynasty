@@ -1,12 +1,18 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest } from 'next/server';
+import { createI18nMiddleware } from 'next-international/middleware';
+
+const I18nMiddleware = createI18nMiddleware({
+  locales: ['en', 'pl'],
+  defaultLocale: 'pl',
+});
 
 export function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   const cspHeader = `
-    default-src 'self';
+    default-src 'self' '*.google.com' 'unsafe-inline' 'unsafe-eval';
     script-src 'self' ${
       process.env.NODE_ENV === 'production'
-        ? `'strict-dynamic''nonce-${nonce}'`
+        ? `'strict-dynamic' 'nonce-${nonce}'`
         : "'unsafe-inline' 'unsafe-eval'"
     };
     style-src 'self' 'nonce-${nonce}';
@@ -15,7 +21,6 @@ export function middleware(request: NextRequest) {
     connect-src 'self';
     object-src 'none';
     base-uri 'self';
-    form-action 'self';
     frame-ancestors 'none';
     block-all-mixed-content;
     upgrade-insecure-requests;
@@ -25,19 +30,10 @@ export function middleware(request: NextRequest) {
     .replace(/\s{2,}/g, ' ')
     .trim();
 
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-nonce', nonce);
+  const response = I18nMiddleware(request);
 
-  requestHeaders.set(
-    'Content-Security-Policy',
-    contentSecurityPolicyHeaderValue
-  );
+  response.headers.set('x-nonce', nonce);
 
-  const response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
   response.headers.set(
     'Content-Security-Policy',
     contentSecurityPolicyHeaderValue

@@ -5,6 +5,7 @@ import type { ChangeEvent } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+
 import { Input } from '@/components/ui/input';
 
 export default function Search({ placeholder }: { placeholder: string }) {
@@ -24,7 +25,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
       } else {
         params.delete('search');
       }
-      replace(`${pathname}?${params.toString()}`);
+      replace(`${pathname}?${params.toString()}` as never);
     },
     300
   );
