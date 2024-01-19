@@ -8,9 +8,14 @@ import { TRPCReactProvider } from '@/trpc/react';
 import { ourFileRouter } from '@/app/api/uploadthing/core';
 import { Navbar } from '@/components/navbar/navbar';
 import { ThemeProvider } from '@/components/theme-provider';
-import { I18nProviderClient } from '@/app/locales/client';
 import '@/styles/globals.css';
 import Footer from '@/components/footer/footer';
+import { type Locale, i18n } from 'i18n-config';
+import { getDictionary } from 'get-dictionary';
+
+export async function generateStaticParams() {
+  return i18n.locales.map((locale) => ({ lang: locale }));
+}
 
 const inter = Inter({
   subsets: ['latin'],
@@ -19,7 +24,7 @@ const inter = Inter({
 
 type Props = {
   children: React.ReactNode;
-  params: { locale: string };
+  params: { locale: Locale };
 };
 
 export const metadata = {
@@ -29,7 +34,12 @@ export const metadata = {
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 
-export default function RootLayout({ children, params: { locale } }: Props) {
+export default async function RootLayout({
+  children,
+  params: { locale },
+}: Props) {
+  const dictionary = await getDictionary(locale);
+
   return (
     <html lang={locale}>
       <body
@@ -41,15 +51,15 @@ export default function RootLayout({ children, params: { locale } }: Props) {
           enableSystem
           disableTransitionOnChange
         >
-          <I18nProviderClient locale={locale}>
-            <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-            <AxiomWebVitals />
-            <Navbar />
-            <TRPCReactProvider cookies={cookies().toString()}>
-              {children}
-            </TRPCReactProvider>
-            <Footer />
-          </I18nProviderClient>
+          {/* <I18nProviderClient locale={locale}> */}
+          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+          <AxiomWebVitals />
+          <Navbar dictionary={dictionary.navigation} />
+          <TRPCReactProvider cookies={cookies().toString()}>
+            {children}
+          </TRPCReactProvider>
+          <Footer />
+          {/* </I18nProviderClient> */}
         </ThemeProvider>
       </body>
     </html>

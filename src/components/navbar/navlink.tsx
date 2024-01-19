@@ -30,7 +30,10 @@ export default function Navlink({
       className={clsx(
         cn(navlinkVariants({ size })),
         className,
-        pathname === props.href
+        pathname.endsWith(
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string
+          props.href.toString() !== '/' ? props.href.toString() : ''
+        )
           ? 'text-gray-900 underline hover:text-black dark:text-gray-100 dark:hover:text-gray-100'
           : 'text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-gray-100'
       )}

@@ -11,11 +11,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useScopedI18n } from '@/app/locales/client';
+import { type DictionaryType } from 'get-dictionary';
 
-export default function ThemeModeToggle() {
+export default function ThemeModeToggle({
+  dictionary,
+}: {
+  dictionary: DictionaryType['navigation'];
+}) {
   const { setTheme } = useTheme();
-  const t = useScopedI18n('navigation');
 
   return (
     <DropdownMenu>
@@ -28,13 +31,13 @@ export default function ThemeModeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme('light')}>
-          {t('light')}
+          {dictionary.light}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')}>
-          {t('dark')}
+          {dictionary.dark}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('system')}>
-          {t('system')}
+          {dictionary.system}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
