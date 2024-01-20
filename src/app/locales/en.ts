@@ -35,5 +35,13 @@ export default {
       uploaded: 'Image uploaded',
       files: 'PNG orJPG file',
     },
+    delete: {
+      title: 'Delete recipe',
+      description: 'Are you sure that you want to delete this recipe?',
+    },
+  },
+  common: {
+    delete: 'Delete',
+    cancel: 'Cancel',
   },
 } as const;

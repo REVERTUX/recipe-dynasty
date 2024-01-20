@@ -35,5 +35,13 @@ export default {
       uploaded: 'Przesłany obraz',
       files: 'Obraz PNG lub JPG',
     },
+    delete: {
+      title: 'Usuń przepis',
+      description: 'Czy na pewno chcesz usunąć ten przepis?',
+    },
+  },
+  common: {
+    delete: 'Usuń',
+    cancel: 'Anuluj',
   },
 } as const;

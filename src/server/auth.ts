@@ -86,3 +86,12 @@ export const authOptions: NextAuthOptions = {
  * @see https://next-auth.js.org/configuration/nextjs
  */
 export const getServerAuthSession = () => getServerSession(authOptions);
+
+export const isUserRole = (
+  session: Awaited<ReturnType<typeof getServerAuthSession>>,
+  role: UserRole['role']
+): boolean => {
+  if (!session) return false;
+  if (session.user.roles.includes(role)) return true;
+  return false;
+};
