@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { type CreateRecipeState, CreateRecipe, EditRecipe } from './shema';
 import { api } from '@/trpc/server';
+import { getCurrentLocale } from '@/app/locales/server';
 
 export async function createRecipe(
   prevState: CreateRecipeState,
@@ -40,9 +41,10 @@ export async function createRecipe(
       message: 'Database Error: Failed to create recipe',
     };
   }
+  const locale = getCurrentLocale();
 
-  revalidatePath('/recipes');
-  redirect('/recipes');
+  revalidatePath(`/${locale}/recipes`);
+  redirect(`/${locale}/recipes`);
 }
 
 export async function editRecipe(
@@ -82,7 +84,8 @@ export async function editRecipe(
       message: 'Database Error: Failed to edit recipe',
     };
   }
+  const locale = getCurrentLocale();
 
-  revalidatePath('/recipes');
-  redirect('/recipes');
+  revalidatePath(`/${locale}/recipes`);
+  redirect(`/${locale}/recipes`);
 }
