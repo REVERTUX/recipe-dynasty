@@ -89,3 +89,10 @@ export async function editRecipe(
   revalidatePath(`/${locale}/recipes`);
   redirect(`/${locale}/recipes`);
 }
+
+export const invalidatePathAndRedirect = () => {
+  const locale = getCurrentLocale();
+
+  revalidatePath(`/${locale}/recipes`);
+  redirect(`/${locale}/recipes`);
+};
