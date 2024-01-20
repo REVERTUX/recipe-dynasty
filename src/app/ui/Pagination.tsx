@@ -4,10 +4,11 @@
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import clsx from 'clsx';
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { HiArrowLeft } from 'react-icons/hi2';
+import { HiArrowRight } from 'react-icons/hi2';
+import Link from 'next/link';
 
 import { generatePagination } from '@/app/lib/utils';
-import Link from 'next/link';
 
 interface PaginationProps {
   totalPages: number;
@@ -117,9 +118,9 @@ function PaginationArrow({
 
   const icon =
     direction === 'left' ? (
-      <ArrowLeftIcon className="w-4" />
+      <HiArrowLeft className="w-4" />
     ) : (
-      <ArrowRightIcon className="w-4" />
+      <HiArrowRight className="w-4" />
     );
 
   return isDisabled ? (

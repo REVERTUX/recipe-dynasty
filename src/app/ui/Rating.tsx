@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { StarIcon } from '@heroicons/react/24/outline';
+import { HiOutlineStar } from 'react-icons/hi';
 
 interface RatingProps {
   value: number;
@@ -16,7 +16,7 @@ function Rating({ value, max }: RatingProps) {
       const active = _value <= Math.round(value);
 
       return (
-        <StarIcon
+        <HiOutlineStar
           key={_value}
           height={24}
           width={24}
