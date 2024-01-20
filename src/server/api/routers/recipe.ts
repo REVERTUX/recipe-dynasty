@@ -116,6 +116,7 @@ export const recipeRouter = createTRPCRouter({
           calories: input.calories,
           servings: input.servings,
           imageUrl: input.imageUrl,
+          lastUpdated: new Date(),
           // categories: {
           //   createMany: {
           //     data: input.categories.map((category) => ({ TODO: handle categories

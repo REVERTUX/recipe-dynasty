@@ -82,6 +82,7 @@ model Recipe {
     title        String
     description  String
     creationDate DateTime         @default(now())
+    lastUpdated  DateTime?
     servings     Int
     rating       Float?
     calories     Float?
