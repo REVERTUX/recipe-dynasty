@@ -149,6 +149,80 @@ export const recipeRouter = createTRPCRouter({
       return recipe;
     }),
 
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const recipeId = input.id;
+      const userId = ctx.session.user.id;
+
+      if (allowOnlyInProduction()) {
+        const { success } = await ratelimit.editRecipe.limit(userId);
+        if (!success) {
+          logger.warn('Rate limit: delete recipe', {
+            userId: userId,
+          });
+          throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+        }
+      }
+
+      if (!ctx.session.user.roles.includes('ADMIN')) {
+        logger.error('User tried to delete recipe he do not have rights to', {
+          recipeId,
+          userId,
+        });
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      const deleteCookingTime = ctx.db.cookingTime.delete({
+        where: { recipeId },
+      });
+
+      const deleteCategories = ctx.db.recipeCategory.deleteMany({
+        where: { recipeId },
+      });
+
+      const deleteSteps = ctx.db.recipeSteps.delete({
+        where: { recipeId },
+      });
+
+      const deleteNutrients = ctx.db.nutrients.delete({
+        where: { recipeId },
+      });
+
+      const deleteFavorite = ctx.db.favorite.deleteMany({
+        where: { recipeId },
+      });
+
+      const deleteReviews = ctx.db.review.deleteMany({
+        where: { recipeId },
+      });
+
+      const deleteRecipe = ctx.db.recipe.delete({
+        where: { id: recipeId },
+      });
+
+      logger.info('Deleting recipe', { recipeId, userId });
+
+      try {
+        await ctx.db.$transaction([
+          deleteCookingTime,
+          deleteCategories,
+          deleteSteps,
+          deleteNutrients,
+          deleteFavorite,
+          deleteReviews,
+          deleteRecipe,
+        ]);
+        logger.info('Deleted recipe', { recipeId, userId });
+      } catch (error) {
+        logger.error('Failed to delete recipe', { recipeId, userId });
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to delete recipe',
+        });
+      }
+    }),
+
   getList: publicProcedure
     .input(listSchema)
     .query(async ({ ctx, input: { search, skip, take } }) => {
