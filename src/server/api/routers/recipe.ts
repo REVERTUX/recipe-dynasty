@@ -42,7 +42,7 @@ export const recipeRouter = createTRPCRouter({
           categories: {
             createMany: {
               data: input.categories.map((category) => ({
-                categoryName: category,
+                categoryId: category,
               })),
             },
           },
@@ -117,13 +117,15 @@ export const recipeRouter = createTRPCRouter({
           servings: input.servings,
           imageUrl: input.imageUrl,
           lastUpdated: new Date(),
-          // categories: {
-          //   createMany: {
-          //     data: input.categories.map((category) => ({ TODO: handle categories
-          //       categoryName: category,
-          //     })),
-          //   },
-          // },
+          categories: {
+            deleteMany: { categoryId: { notIn: input.categories } },
+            createMany: {
+              data: input.categories.map((category) => ({
+                categoryId: category,
+              })),
+              skipDuplicates: true,
+            },
+          },
           cookingTime: {
             update: {
               ...cookingTime,
@@ -254,7 +256,9 @@ export const recipeRouter = createTRPCRouter({
         where: { id: { equals: id } },
         include: {
           categories: {
-            select: { category: true, categoryName: true, id: true },
+            select: {
+              category: { select: { name_en: true, name_pl: true, id: true } },
+            },
           },
           nutrients: { select: { carbs: true, fat: true, protein: true } },
           cookingTime: { select: { unit: true, value: true } },
@@ -270,4 +274,10 @@ export const recipeRouter = createTRPCRouter({
         select: { steps: true },
       });
     }),
+
+  getCategories: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.category.findMany({
+      select: { name_pl: true, name_en: true, id: true },
+    });
+  }),
 });
