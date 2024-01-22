@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { type AppRouter } from '@/server/api/root';
 import { type inferRouterOutputs } from '@trpc/server';
 import { Label } from '@/components/ui/label';
-import { useCurrentLocale, useI18n, useScopedI18n } from '@/app/locales/client';
+import { useCurrentLocale, useScopedI18n } from '@/app/locales/client';
 import { getTranslationByLocale } from '@/app/lib/utils';
 import CategoriesEditDialog from './categoryies-edit-dialog';
 

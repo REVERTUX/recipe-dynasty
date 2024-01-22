@@ -1,7 +1,6 @@
 'use client';
 
 import { type Dispatch, type SetStateAction } from 'react';
-import { MdAdd } from 'react-icons/md';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -55,7 +54,7 @@ function CategoriesEditDialog({
     <Dialog>
       <DialogTrigger>
         <button type="button" disabled={isLoading}>
-          <Badge size="big" variant='secondary' className="flex gap-1">
+          <Badge size="big" variant="secondary" className="flex gap-1">
             {t('recipe.categories.addRemove')}
           </Badge>
         </button>
