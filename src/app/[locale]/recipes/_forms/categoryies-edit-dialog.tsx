@@ -27,7 +27,7 @@ function CategoriesEditDialog({
   activeCategories,
   setActiveCategories,
 }: CategoriesEditDialog) {
-  const { data: categories, isLoading } = api.recipe.getCategories.useQuery();
+  const { data: categories, isLoading } = api.categories.getList.useQuery();
   const t = useI18n();
   const locale = useCurrentLocale();
 

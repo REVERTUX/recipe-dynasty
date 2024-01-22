@@ -87,7 +87,7 @@ export const authOptions: NextAuthOptions = {
  */
 export const getServerAuthSession = () => getServerSession(authOptions);
 
-export const isUserRole = (
+export const userHasRole = (
   session: Awaited<ReturnType<typeof getServerAuthSession>>,
   role: UserRole['role']
 ): boolean => {

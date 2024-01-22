@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { MdEdit } from 'react-icons/md';
 
-import { getServerAuthSession, isUserRole } from '@/server/auth';
+import { getServerAuthSession, userHasRole } from '@/server/auth';
 import { db } from '@/server/db';
 import { Button } from '@/components/ui/button';
 import { getCurrentLocale } from '@/app/locales/server';
@@ -24,7 +24,7 @@ async function EditLink({ recipeId }: EditLinkProps) {
       return false;
     }
 
-    if (isUserRole(session, 'ADMIN')) {
+    if (userHasRole(session, 'ADMIN')) {
       return true;
     }
 

@@ -274,10 +274,4 @@ export const recipeRouter = createTRPCRouter({
         select: { steps: true },
       });
     }),
-
-  getCategories: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.category.findMany({
-      select: { name_pl: true, name_en: true, id: true },
-    });
-  }),
 });
