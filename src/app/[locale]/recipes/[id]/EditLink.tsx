@@ -19,11 +19,19 @@ async function EditLink({ recipeId }: EditLinkProps) {
     select: { userId: true },
   });
 
-  if (!recipe) {
-    return null;
-  }
+  const userHaveRights = () => {
+    if (!recipe) {
+      return false;
+    }
 
-  if (session?.user.id !== recipe.userId || !isUserRole(session, 'ADMIN')) {
+    if (isUserRole(session, 'ADMIN')) {
+      return true;
+    }
+
+    return session?.user.id === recipe.userId;
+  };
+
+  if (!userHaveRights) {
     return null;
   }
 
