@@ -122,18 +122,20 @@ model CookingTime {
 }
 
 model Category {
-    name           String           @id
+    id             String           @id @default(cuid())
+    name_pl        String           @unique
+    name_en        String           @unique
     recipeCategory RecipeCategory[]
 }
 
 model RecipeCategory {
-    id           String   @id @default(cuid())
-    recipeId     String
-    categoryName String
-    category     Category @relation(fields: [categoryName], references: [name])
-    recipe       Recipe   @relation(fields: [recipeId], references: [id])
+    recipeId   String
+    categoryId String
+    category   Category @relation(fields: [categoryId], references: [id])
+    recipe     Recipe   @relation(fields: [recipeId], references: [id])
 
     @@index([recipeId])
+    @@unique([recipeId, categoryId])
 }
 
 model Nutrients {
