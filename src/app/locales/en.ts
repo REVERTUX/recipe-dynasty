@@ -39,9 +39,14 @@ export default {
       title: 'Delete recipe',
       description: 'Are you sure that you want to delete this recipe?',
     },
+    categories: {
+      categories: 'Categories',
+      addRemove: 'Add/Remove',
+    },
   },
   common: {
     delete: 'Delete',
     cancel: 'Cancel',
+    close: 'Close',
   },
 } as const;

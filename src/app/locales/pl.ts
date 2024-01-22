@@ -39,9 +39,14 @@ export default {
       title: 'Usuń przepis',
       description: 'Czy na pewno chcesz usunąć ten przepis?',
     },
+    categories: {
+      categories: 'Kategorie',
+      addRemove: 'Dodaj/Usuń',
+    },
   },
   common: {
     delete: 'Usuń',
     cancel: 'Anuluj',
+    close: 'Zamknij',
   },
 } as const;

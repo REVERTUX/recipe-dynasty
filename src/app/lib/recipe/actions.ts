@@ -9,7 +9,8 @@ import { getCurrentLocale } from '@/app/locales/server';
 export async function createRecipe(
   prevState: CreateRecipeState,
   formData: FormData,
-  markdown: string | undefined
+  markdown: string | undefined,
+  categories: string[]
 ): Promise<CreateRecipeState> {
   const validatedFields = CreateRecipe.safeParse({
     title: formData.get('title'),
@@ -18,12 +19,13 @@ export async function createRecipe(
     servings: formData.get('servings'),
     calories: formData.get('calories'),
     cookingTime: { value: formData.get('time'), unit: 'h' },
+    catergories: formData.get('categories') ?? [],
     nutrients: {
       fat: formData.get('fat'),
       protein: formData.get('protein'),
       carbs: formData.get('carbs'),
     },
-    categories: [],
+    categories,
     steps: markdown,
   });
 
@@ -51,7 +53,8 @@ export async function editRecipe(
   prevState: CreateRecipeState,
   formData: FormData,
   id: string,
-  markdown: string | undefined
+  markdown: string | undefined,
+  categories: string[]
 ): Promise<CreateRecipeState> {
   const validatedFields = EditRecipe.safeParse({
     id,
@@ -66,7 +69,7 @@ export async function editRecipe(
       protein: formData.get('protein'),
       carbs: formData.get('carbs'),
     },
-    categories: [],
+    categories,
     steps: markdown,
   });
 
