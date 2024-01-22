@@ -40,7 +40,7 @@ export default {
       description: 'Are you sure that you want to delete this recipe?',
     },
     categories: {
-      categories: 'Categories',
+      title: 'Categories',
       addRemove: 'Add/Remove',
     },
   },

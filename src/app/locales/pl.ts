@@ -40,7 +40,7 @@ export default {
       description: 'Czy na pewno chcesz usunąć ten przepis?',
     },
     categories: {
-      categories: 'Kategorie',
+      title: 'Kategorie',
       addRemove: 'Dodaj/Usuń',
     },
   },

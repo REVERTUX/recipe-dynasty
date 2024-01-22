@@ -36,7 +36,7 @@ const CategoriesForm = forwardRef<CategoriesFormRef, CategoriesFormProps>(
 
     return (
       <div className="flex flex-col gap-2">
-        <Label>{t('categories')}</Label>
+        <Label>{t('title')}</Label>
         <div className="flex gap-1">
           {categoriesState?.map(({ category: { name_en, name_pl, id } }) => (
             <Badge key={id} size="big" className="flex gap-1">
