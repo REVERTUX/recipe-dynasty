@@ -80,7 +80,7 @@ async function Informations({ recipeId }: InformationsProps) {
           <h3 className="mb-1 text-xl font-semibold">
             {t('categories.title')}
           </h3>
-          <div className="flex gap-1">
+          <div className="flex flex-wrap gap-1">
             {categories.map(({ category: { id, name_en, name_pl } }) => (
               <Badge key={id} size="big" className="hover:bg-primary">
                 {getTranslationByLocale(locale, name_en, name_pl)}

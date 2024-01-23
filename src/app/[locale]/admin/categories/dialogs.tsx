@@ -23,12 +23,12 @@ interface DeleteDialogProps {
 }
 
 export function DeleteDialog({ categoryId, open, setOpen }: DeleteDialogProps) {
-  const { mutateAsync, isLoading } = api.categories.delete.useMutation();
+  const { mutate, isLoading } = api.categories.delete.useMutation();
   const utils = api.useUtils();
   const t = useI18n();
 
-  const handleDelete = async () => {
-    await mutateAsync(
+  const handleDelete = () => {
+    mutate(
       // TODO handle errors
       { id: categoryId },
       {
@@ -56,7 +56,7 @@ export function DeleteDialog({ categoryId, open, setOpen }: DeleteDialogProps) {
             {t('common.delete')}
           </Button>
           <DialogClose asChild>
-            <Button variant="secondary" disabled={isLoading} autoFocus>
+            <Button variant="secondary" disabled={isLoading}>
               {t('common.cancel')}
             </Button>
           </DialogClose>
@@ -73,11 +73,11 @@ interface EditDialogProps {
 }
 
 export function EditDialog({ open, setOpen, category }: EditDialogProps) {
-  const { mutateAsync, isLoading } = api.categories.update.useMutation();
+  const { mutate, isLoading } = api.categories.update.useMutation();
   const utils = api.useUtils();
   const t = useI18n();
 
-  const onSubmit = async (state: FormData) => {
+  const onSubmit = (state: FormData) => {
     const validatedFields = CreateCategory.safeParse({
       name_pl: state.get('text_pl'),
       name_en: state.get('text_en'),
@@ -85,7 +85,7 @@ export function EditDialog({ open, setOpen, category }: EditDialogProps) {
 
     if (!validatedFields.success) return; // TODO handle errors
 
-    await mutateAsync(
+    mutate(
       { ...validatedFields.data, id: category.id },
       {
         onSuccess() {
@@ -122,11 +122,11 @@ interface CreateDialogProps {
 }
 
 export function CreateDialog({ open, setOpen }: CreateDialogProps) {
-  const { mutateAsync, isLoading } = api.categories.create.useMutation();
+  const { mutate, isLoading } = api.categories.create.useMutation();
   const utils = api.useUtils();
   const t = useI18n();
 
-  const onSubmit = async (state: FormData) => {
+  const onSubmit = (state: FormData) => {
     const validatedFields = CreateCategory.safeParse({
       name_pl: state.get('text_pl'),
       name_en: state.get('text_en'),
@@ -134,7 +134,7 @@ export function CreateDialog({ open, setOpen }: CreateDialogProps) {
 
     if (!validatedFields.success) return; // TODO handle errors
 
-    await mutateAsync(validatedFields.data, {
+    mutate(validatedFields.data, {
       onSuccess() {
         void utils.categories.getList.invalidate();
         setOpen(false);
@@ -179,13 +179,15 @@ function DialogForm({
   onSubmit,
   onClose,
 }: DialogFormProps) {
+  const t = useI18n();
+
   return (
     <form className="flex flex-col gap-2" action={onSubmit}>
       <div>
         <FormInput
           id="text_pl"
           name="text_pl"
-          label="polish"
+          label={t('navigation.pl')}
           defaultValue={textPlDefault}
         />
       </div>
@@ -193,7 +195,7 @@ function DialogForm({
         <FormInput
           id="text_en"
           name="text_en"
-          label="english"
+          label={t('navigation.en')}
           defaultValue={textEnDefault}
         />
       </div>
@@ -206,7 +208,6 @@ function DialogForm({
           type="reset"
           disabled={disabled}
           onClick={onClose}
-          autoFocus
         >
           {resetBtnContnet}
         </Button>
