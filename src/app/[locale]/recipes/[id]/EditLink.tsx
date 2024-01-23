@@ -19,7 +19,7 @@ async function EditLink({ recipeId }: EditLinkProps) {
     select: { userId: true },
   });
 
-  const userHaveRights = () => {
+  const haveRights = () => {
     if (!recipe) {
       return false;
     }
@@ -31,7 +31,7 @@ async function EditLink({ recipeId }: EditLinkProps) {
     return session?.user.id === recipe.userId;
   };
 
-  if (!userHaveRights) {
+  if (!haveRights()) {
     return null;
   }
 
