@@ -61,9 +61,9 @@ function CategoriesEditDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('recipe.delete.title')}</DialogTitle>
+          <DialogTitle>{t('recipe.categories.title')}</DialogTitle>
         </DialogHeader>
-        <div className="flex gap-1">
+        <div className="flex flex-wrap gap-1 gap-y-2">
           {categories?.data.map(({ name_en, name_pl, id }) => (
             <button
               type="button"
