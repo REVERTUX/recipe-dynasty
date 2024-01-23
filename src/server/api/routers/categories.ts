@@ -1,23 +1,44 @@
-import { CreateCategory, EditCategory } from '@/app/lib/recipe/shema';
+import { z } from 'zod';
 import { getLogger } from '@/utils/logger';
 import { userHasRole } from '@/server/auth';
 import { TRPCError } from '@trpc/server';
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
-import { z } from 'zod';
+import { CreateCategory, EditCategory, PaginationShema } from '../schema';
 
 const logger = getLogger();
 
 export const categoriesRouter = createTRPCRouter({
-  getList: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.category.findMany({
-      select: { name_pl: true, name_en: true, id: true },
-    });
-  }),
+  getList: publicProcedure
+    .input(PaginationShema)
+    .query(async ({ ctx, input: { search, skip, take } }) => {
+      const data = await ctx.db.category.findMany({
+        skip,
+        take,
+        select: { name_pl: true, name_en: true, id: true },
+        where: {
+          OR: [
+            { name_en: { contains: search ?? '', mode: 'insensitive' } },
+            { name_pl: { contains: search ?? '', mode: 'insensitive' } },
+          ],
+        },
+      });
+
+      const count = await ctx.db.category.count({
+        where: {
+          OR: [
+            { name_en: { contains: search ?? '', mode: 'insensitive' } },
+            { name_pl: { contains: search ?? '', mode: 'insensitive' } },
+          ],
+        },
+      });
+
+      return { data, count };
+    }),
 
   create: protectedProcedure
     .input(CreateCategory)
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
       const { name_en, name_pl } = input;
 
@@ -32,21 +53,24 @@ export const categoriesRouter = createTRPCRouter({
         userId,
       });
 
-      const category = await ctx.db.category.create({
-        data: { name_en, name_pl },
-      });
+      try {
+        const category = await ctx.db.category.create({
+          data: { name_en, name_pl },
+        });
+        logger.info('Created category', {
+          userId,
+          categoryId: category.id,
+        });
 
-      logger.info('Created category', {
-        userId,
-        categoryId: category.id,
-      });
-
-      return category;
+        return category;
+      } catch (error) {
+        throw new TRPCError({ code: 'CONFLICT' });
+      }
     }),
 
   update: protectedProcedure
     .input(EditCategory)
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
       const { id, name_en, name_pl } = input;
 
@@ -84,7 +108,7 @@ export const categoriesRouter = createTRPCRouter({
 
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
       const { id } = input;
 

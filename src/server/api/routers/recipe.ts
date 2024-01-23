@@ -3,12 +3,12 @@ import {
   protectedProcedure,
   publicProcedure,
 } from '@/server/api/trpc';
-import { listSchema } from './recipe.schema';
 import { CreateRecipe, EditRecipe } from '@/app/lib/recipe/shema';
 import { z } from 'zod';
 import { allowOnlyInProduction, ratelimit } from '@/server/ratelimiter';
 import { TRPCError } from '@trpc/server';
 import { getLogger } from '@/utils/logger';
+import { PaginationShema } from '../schema';
 
 const logger = getLogger();
 
@@ -227,7 +227,7 @@ export const recipeRouter = createTRPCRouter({
     }),
 
   getList: publicProcedure
-    .input(listSchema)
+    .input(PaginationShema)
     .query(async ({ ctx, input: { search, skip, take } }) => {
       const data = await ctx.db.recipe.findMany({
         skip,
