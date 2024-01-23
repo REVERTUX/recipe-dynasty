@@ -58,15 +58,3 @@ export const EditRecipe = RecipeShema.omit({
   rating: true,
   favorite: true,
 }).extend({ steps: z.string() });
-
-export const CategoryShema = z.object({
-  id: z.string(),
-  name_pl: z.string(),
-  name_en: z.string(),
-});
-
-export const CreateCategory = CategoryShema.omit({
-  id: true,
-});
-
-export const EditCategory = CategoryShema;

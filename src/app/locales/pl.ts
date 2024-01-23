@@ -2,6 +2,7 @@ export default {
   navigation: {
     home: 'Strona główna',
     recipes: 'Przepisy',
+    admin: 'Admin',
     createRecipe: 'Stwórz przepis',
     title: 'Dynastia Przepisów',
     signIn: 'Zaloguj się',
@@ -44,9 +45,30 @@ export default {
       addRemove: 'Dodaj/Usuń',
     },
   },
+  categories: {
+    add: 'Dodaj kategorię',
+    edit: {
+      title: 'Edytuj kategorię',
+    },
+    delete: {
+      title: 'Usuń kategorię',
+      description: 'Czy na pewno chcesz usunąć tą kategorię?',
+    },
+    create: {
+      title: 'Dodaj kategorię',
+    },
+  },
+  pagination: {
+    next: 'Następna',
+    previous: 'Poprzednia',
+    search: 'Szukaj',
+  },
   common: {
     delete: 'Usuń',
     cancel: 'Anuluj',
     close: 'Zamknij',
+    create: 'Stwórz',
+    update: 'Zaaktualizuj',
+    edit: 'Edytuj',
   },
 } as const;

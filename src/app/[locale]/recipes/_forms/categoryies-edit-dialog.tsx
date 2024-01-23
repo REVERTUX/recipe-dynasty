@@ -27,7 +27,7 @@ function CategoriesEditDialog({
   activeCategories,
   setActiveCategories,
 }: CategoriesEditDialog) {
-  const { data: categories, isLoading } = api.categories.getList.useQuery();
+  const { data: categories, isLoading } = api.categories.getList.useQuery({});
   const t = useI18n();
   const locale = useCurrentLocale();
 
@@ -64,7 +64,7 @@ function CategoriesEditDialog({
           <DialogTitle>{t('recipe.delete.title')}</DialogTitle>
         </DialogHeader>
         <div className="flex gap-1">
-          {categories?.map(({ name_en, name_pl, id }) => (
+          {categories?.data.map(({ name_en, name_pl, id }) => (
             <button
               type="button"
               key={id}
