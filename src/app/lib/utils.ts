@@ -30,3 +30,18 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export function getTranslationByLocale(
+  locale: 'en' | 'pl',
+  text_en: string,
+  text_pl: string
+) {
+  switch (locale) {
+    case 'en':
+      return text_en;
+    case 'pl':
+      return text_pl;
+    default:
+      return text_pl;
+  }
+}

@@ -1,8 +1,11 @@
-import { getScopedI18n } from '@/app/locales/server';
-import { api } from '@/trpc/server';
 import Image from 'next/image';
 import { BiDish } from 'react-icons/bi';
 import { LuClock } from 'react-icons/lu';
+
+import { getTranslationByLocale } from '@/app/lib/utils';
+import { getCurrentLocale, getScopedI18n } from '@/app/locales/server';
+import { Badge } from '@/components/ui/badge';
+import { api } from '@/trpc/server';
 
 interface InformationsProps {
   recipeId: string;
@@ -11,7 +14,7 @@ interface InformationsProps {
 async function Informations({ recipeId }: InformationsProps) {
   const {
     calories,
-    // categories,
+    categories,
     cookingTime,
     // creationDate,
     description,
@@ -23,6 +26,7 @@ async function Informations({ recipeId }: InformationsProps) {
   } = await api.recipe.getOne.query({ id: recipeId });
 
   const t = await getScopedI18n('recipe');
+  const locale = getCurrentLocale();
 
   return (
     <div className="flex flex-col gap-2 py-2">
@@ -71,6 +75,18 @@ async function Informations({ recipeId }: InformationsProps) {
               {t('calories')}: {`${calories}kcal` ?? 'not specified'}
             </li>
           </ul>
+        </div>
+        <div>
+          <h3 className="mb-1 text-xl font-semibold">
+            {t('categories.title')}
+          </h3>
+          <div className="flex gap-1">
+            {categories.map(({ category: { id, name_en, name_pl } }) => (
+              <Badge key={id} size="big" className="hover:bg-primary">
+                {getTranslationByLocale(locale, name_en, name_pl)}
+              </Badge>
+            ))}
+          </div>
         </div>
       </div>
     </div>

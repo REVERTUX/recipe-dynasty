@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 
 import { Separator } from '@/components/ui/separator';
 import { api } from '@/trpc/server';
@@ -6,6 +7,9 @@ import { api } from '@/trpc/server';
 import Informations from './Informations';
 import Steps from './Steps';
 import EditLink from './EditLink';
+import { getServerAuthSession, userHasRole } from '@/server/auth';
+
+const DeleteRecipe = dynamic(() => import('./delete'), { ssr: false });
 
 interface PageProps {
   params: {
@@ -32,9 +36,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Page({ params: { id } }: PageProps) {
+  const session = await getServerAuthSession();
+
   return (
     <>
-      <EditLink recipeId={id} />
+      <div className="flex justify-end gap-1">
+        <EditLink recipeId={id} />
+        {userHasRole(session, 'ADMIN') && <DeleteRecipe recipeId={id} />}
+      </div>
 
       <div className="flex flex-col gap-4">
         <Informations recipeId={id} />

@@ -1,7 +1,7 @@
 'use client';
 
 import { type MouseEvent, useState } from 'react';
-import { StarIcon } from '@heroicons/react/24/outline';
+import { HiOutlineStar } from 'react-icons/hi';
 import clsx from 'clsx';
 
 interface FavoriteButtonProps {
@@ -28,7 +28,7 @@ function FavoriteButton({ favorite, recipeId, disabled }: FavoriteButtonProps) {
         disabled={disabled}
         aria-label="favorite"
       >
-        <StarIcon
+        <HiOutlineStar
           width={24}
           height={24}
           className={clsx('transition-colors', {

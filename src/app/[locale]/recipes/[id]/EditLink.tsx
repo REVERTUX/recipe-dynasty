@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { MdEdit } from 'react-icons/md';
 
-import { getServerAuthSession } from '@/server/auth';
+import { getServerAuthSession, userHasRole } from '@/server/auth';
 import { db } from '@/server/db';
 import { Button } from '@/components/ui/button';
 import { getCurrentLocale } from '@/app/locales/server';
@@ -19,22 +19,28 @@ async function EditLink({ recipeId }: EditLinkProps) {
     select: { userId: true },
   });
 
-  if (!recipe) {
-    return <div />;
-  }
+  const userHaveRights = () => {
+    if (!recipe) {
+      return false;
+    }
 
-  if (session?.user.id !== recipe.userId) {
-    return <div />;
+    if (userHasRole(session, 'ADMIN')) {
+      return true;
+    }
+
+    return session?.user.id === recipe.userId;
+  };
+
+  if (!userHaveRights) {
+    return null;
   }
 
   return (
-    <div className="flex justify-end">
-      <Link href={`/${locale}/recipes/${recipeId}/edit`}>
-        <Button variant="ghost" className="hover:dark:bg-slate-700">
-          <MdEdit size={24} />
-        </Button>
-      </Link>
-    </div>
+    <Link href={`/${locale}/recipes/${recipeId}/edit`}>
+      <Button variant="ghost" size="icon" className="hover:dark:bg-slate-700">
+        <MdEdit size={24} />
+      </Button>
+    </Link>
   );
 }
 
