@@ -1,7 +1,7 @@
+import { redirect } from 'next/navigation';
 import { api } from '@/trpc/server';
 import EditForm from './EditForm';
-import { getServerAuthSession } from '@/server/auth';
-import { redirect } from 'next/navigation';
+import { getServerAuthSession, userHasRole } from '@/server/auth';
 
 interface PageProps {
   params: {
@@ -14,10 +14,14 @@ export default async function Page({ params: { id } }: PageProps) {
   const recipe = await api.recipe.getOne.query({ id });
   const { steps } = await api.recipe.getStep.query({ id });
 
-  if (
-    session?.user.id !== recipe.userId &&
-    !session?.user.roles.includes('ADMIN')
-  ) {
+  const haveRights = () => {
+    if (userHasRole(session, 'ADMIN')) {
+      return true;
+    }
+    return session?.user.id === recipe.userId;
+  };
+
+  if (!haveRights()) {
     redirect(`/recipes/${id}`);
   }
 
