@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
-import { getServerAuthSession } from '@/server/auth';
+import { getServerAuthSession, userHasRole } from '@/server/auth';
 import { Button } from '@/components/ui/button';
 import { SheetTrigger, SheetContent, Sheet } from '@/components/ui/sheet';
 import { getCurrentLocale, getScopedI18n } from '@/app/locales/server';
@@ -29,6 +29,9 @@ export async function Navbar() {
             {t('title')}
           </Link>
           <div className="hidden items-center space-x-10 md:flex">
+            {userHasRole(session, 'ADMIN') && (
+              <Navlink href={`/${locale}/admin`}>{t('admin')}</Navlink>
+            )}
             <Navlink href={`/${locale}`}> {t('home')}</Navlink>
             <Navlink href={`/${locale}/recipes`}>{t('recipes')}</Navlink>
             {/* <Navlink
@@ -79,6 +82,15 @@ export async function Navbar() {
                         </Link>
                       )}
                     </div>
+                    {userHasRole(session, 'ADMIN') && (
+                      <Navlink
+                        href={`/${locale}/admin`}
+                        size="large"
+                        className="text-center"
+                      >
+                        {t('admin')}
+                      </Navlink>
+                    )}
                     <Navlink
                       href={`/${locale}`}
                       size="large"
@@ -93,6 +105,7 @@ export async function Navbar() {
                     >
                       {t('recipes')}
                     </Navlink>
+
                     {session && (
                       <Link href={`/${locale}/recipes/create`}>
                         <Button fullwidth>{t('createRecipe')}</Button>

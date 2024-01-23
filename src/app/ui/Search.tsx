@@ -5,10 +5,16 @@ import type { ChangeEvent } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { HiOutlineMagnifyingGlass } from 'react-icons/hi2';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import clsx from 'clsx';
 
 import { Input } from '@/components/ui/input';
 
-export default function Search({ placeholder }: { placeholder: string }) {
+interface SearchProps {
+  placeholder: string;
+  className?: string;
+}
+
+export default function Search({ placeholder, className }: SearchProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -31,9 +37,9 @@ export default function Search({ placeholder }: { placeholder: string }) {
   );
 
   return (
-    <div className="relative flex flex-1 flex-shrink-0">
+    <div className={clsx('relative flex flex-1 flex-shrink-0', className)}>
       <label htmlFor="search" className="sr-only">
-        Search
+        {placeholder}
       </label>
       <Input
         className="peer block w-full rounded-md border border-gray-400 py-[9px] pl-10 text-sm outline-2"

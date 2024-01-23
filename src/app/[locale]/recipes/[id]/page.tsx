@@ -7,7 +7,7 @@ import { api } from '@/trpc/server';
 import Informations from './Informations';
 import Steps from './Steps';
 import EditLink from './EditLink';
-import { getServerAuthSession, isUserRole } from '@/server/auth';
+import { getServerAuthSession, userHasRole } from '@/server/auth';
 
 const DeleteRecipe = dynamic(() => import('./delete'), { ssr: false });
 
@@ -42,7 +42,7 @@ export default async function Page({ params: { id } }: PageProps) {
     <>
       <div className="flex justify-end gap-1">
         <EditLink recipeId={id} />
-        {isUserRole(session, 'ADMIN') && <DeleteRecipe recipeId={id} />}
+        {userHasRole(session, 'ADMIN') && <DeleteRecipe recipeId={id} />}
       </div>
 
       <div className="flex flex-col gap-4">

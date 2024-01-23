@@ -9,10 +9,13 @@ import { type CreateRecipeState } from '@/app/lib/recipe/shema';
 import { type inferRouterOutputs } from '@trpc/server';
 import { type AppRouter } from '@/server/api/root';
 import { Button } from '@/components/ui/button';
+import { useScopedI18n } from '@/app/locales/client';
 
 import BasicInfoForm from '../../_forms/BasicInfoForm';
 import Editor from '../../_forms/Editor';
-import { useScopedI18n } from '@/app/locales/client';
+import CategoriesForm, {
+  type CategoriesFormRef,
+} from '../../_forms/categories-form';
 
 interface EditFormProps {
   recipe: inferRouterOutputs<AppRouter>['recipe']['getOne'];
@@ -23,6 +26,7 @@ interface EditFormProps {
 function EditForm({ recipe, steps, recipeId }: EditFormProps) {
   const initialState = { message: '', error: {} };
   const editorRef = useRef<MDXEditorMethods | null>(null);
+  const categoriesRef = useRef<CategoriesFormRef | null>(null);
 
   const t = useScopedI18n('recipe');
 
@@ -34,7 +38,8 @@ function EditForm({ recipe, steps, recipeId }: EditFormProps) {
       state,
       formData,
       recipeId,
-      editorRef.current?.getMarkdown()
+      editorRef.current?.getMarkdown(),
+      categoriesRef.current?.getValues() ?? []
     );
   };
 
@@ -50,6 +55,10 @@ function EditForm({ recipe, steps, recipeId }: EditFormProps) {
     >
       <h1 className="mb-4 text-4xl font-bold">{t('editTitle')}</h1>
       <BasicInfoForm state={state} recipe={recipe} />
+      <CategoriesForm
+        categories={recipe?.categories ?? []}
+        ref={categoriesRef}
+      />
       <Editor markdown={steps} editorRef={editorRef} />
       <p className="py-2 text-red-600">{state.message}</p>
       <SubmitButton content={t('edit')} />

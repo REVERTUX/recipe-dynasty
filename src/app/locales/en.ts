@@ -2,6 +2,7 @@ export default {
   navigation: {
     home: 'Home',
     recipes: 'Recipes',
+    admin: 'Admin',
     createRecipe: 'Create recipe',
     title: 'Recipe Dynasty',
     signIn: 'Sign In',
@@ -39,9 +40,35 @@ export default {
       title: 'Delete recipe',
       description: 'Are you sure that you want to delete this recipe?',
     },
+    categories: {
+      title: 'Categories',
+      addRemove: 'Add/Remove',
+    },
+  },
+  categories: {
+    add: 'Add category',
+    edit: {
+      title: 'Edit category',
+    },
+    delete: {
+      title: 'Delete category',
+      description: 'Are you sure that you want to delete this category?',
+    },
+    create: {
+      title: 'Add category',
+    },
+  },
+  pagination: {
+    next: 'Next',
+    previous: 'Previous',
+    search: 'Search',
   },
   common: {
     delete: 'Delete',
     cancel: 'Cancel',
+    close: 'Close',
+    create: 'Create',
+    update: 'Update',
+    edit: 'Edit',
   },
 } as const;

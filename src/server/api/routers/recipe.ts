@@ -3,12 +3,12 @@ import {
   protectedProcedure,
   publicProcedure,
 } from '@/server/api/trpc';
-import { listSchema } from './recipe.schema';
 import { CreateRecipe, EditRecipe } from '@/app/lib/recipe/shema';
 import { z } from 'zod';
 import { allowOnlyInProduction, ratelimit } from '@/server/ratelimiter';
 import { TRPCError } from '@trpc/server';
 import { getLogger } from '@/utils/logger';
+import { PaginationShema } from '../schema';
 
 const logger = getLogger();
 
@@ -42,7 +42,7 @@ export const recipeRouter = createTRPCRouter({
           categories: {
             createMany: {
               data: input.categories.map((category) => ({
-                categoryName: category,
+                categoryId: category,
               })),
             },
           },
@@ -117,13 +117,15 @@ export const recipeRouter = createTRPCRouter({
           servings: input.servings,
           imageUrl: input.imageUrl,
           lastUpdated: new Date(),
-          // categories: {
-          //   createMany: {
-          //     data: input.categories.map((category) => ({ TODO: handle categories
-          //       categoryName: category,
-          //     })),
-          //   },
-          // },
+          categories: {
+            deleteMany: { categoryId: { notIn: input.categories } },
+            createMany: {
+              data: input.categories.map((category) => ({
+                categoryId: category,
+              })),
+              skipDuplicates: true,
+            },
+          },
           cookingTime: {
             update: {
               ...cookingTime,
@@ -225,7 +227,7 @@ export const recipeRouter = createTRPCRouter({
     }),
 
   getList: publicProcedure
-    .input(listSchema)
+    .input(PaginationShema)
     .query(async ({ ctx, input: { search, skip, take } }) => {
       const data = await ctx.db.recipe.findMany({
         skip,
@@ -254,7 +256,9 @@ export const recipeRouter = createTRPCRouter({
         where: { id: { equals: id } },
         include: {
           categories: {
-            select: { category: true, categoryName: true, id: true },
+            select: {
+              category: { select: { name_en: true, name_pl: true, id: true } },
+            },
           },
           nutrients: { select: { carbs: true, fat: true, protein: true } },
           cookingTime: { select: { unit: true, value: true } },
