@@ -9,8 +9,9 @@ import { ourFileRouter } from '@/app/api/uploadthing/core';
 import { Navbar } from '@/components/navbar/navbar';
 import { ThemeProvider } from '@/components/theme-provider';
 import { I18nProviderClient } from '@/app/locales/client';
-import '@/styles/globals.css';
 import Footer from '@/components/footer/footer';
+import { Toaster } from '@/components/ui/sonner';
+import '@/styles/globals.css';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -42,6 +43,7 @@ export default function RootLayout({ children, params: { locale } }: Props) {
             enableSystem
             disableTransitionOnChange
           >
+            <Toaster richColors />
             <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
             <AxiomWebVitals />
             <Navbar />

@@ -49,13 +49,25 @@ export default {
     add: 'Dodaj kategorię',
     edit: {
       title: 'Edytuj kategorię',
+      notification: {
+        success: 'Pomyślnie zaaktualizowano kategorię',
+        error: 'Nie udało się zaaktualizować kategorii',
+      },
     },
     delete: {
       title: 'Usuń kategorię',
       description: 'Czy na pewno chcesz usunąć tą kategorię?',
+      notification: {
+        success: 'Pomyślnie usunięto kategorię',
+        error: 'Nie udało się usunąć kategorii',
+      },
     },
     create: {
       title: 'Dodaj kategorię',
+      notification: {
+        success: 'Pomyślnie stworzono kategorię',
+        error: 'Nie udało się stworzyć kategorii',
+      },
     },
   },
   pagination: {

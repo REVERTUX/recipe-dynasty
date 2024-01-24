@@ -49,13 +49,25 @@ export default {
     add: 'Add category',
     edit: {
       title: 'Edit category',
+      notification: {
+        success: 'Successfully updated the category',
+        error: 'Failed to update the category',
+      },
     },
     delete: {
       title: 'Delete category',
       description: 'Are you sure that you want to delete this category?',
+      notification: {
+        success: 'Successfully deleted the category',
+        error: 'Failed to delete the category',
+      },
     },
     create: {
       title: 'Add category',
+      notification: {
+        success: 'Successfully created the category',
+        error: 'Failed to create the category',
+      },
     },
   },
   pagination: {
