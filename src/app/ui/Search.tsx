@@ -9,6 +9,8 @@ import clsx from 'clsx';
 
 import { Input } from '@/components/ui/input';
 
+const SEARCH_DEBOUNCE_MS = 300;
+
 interface SearchProps {
   placeholder: string;
   className?: string;
@@ -33,7 +35,7 @@ export default function Search({ placeholder, className }: SearchProps) {
       }
       replace(`${pathname}?${params.toString()}` as never);
     },
-    300
+    SEARCH_DEBOUNCE_MS
   );
 
   return (
