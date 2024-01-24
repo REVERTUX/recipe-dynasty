@@ -17,3 +17,7 @@ export const PaginationShema = z.object({
   take: z.number().optional(),
   skip: z.number().optional(),
 });
+
+export const RecipePaginationShema = PaginationShema.extend({
+  categories: z.string().array().optional(),
+});

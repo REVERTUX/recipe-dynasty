@@ -1,14 +1,16 @@
+import { z } from 'zod';
+import { type Prisma } from '@prisma/client';
+
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from '@/server/api/trpc';
 import { CreateRecipe, EditRecipe } from '@/app/lib/recipe/shema';
-import { z } from 'zod';
 import { allowOnlyInProduction, ratelimit } from '@/server/ratelimiter';
 import { TRPCError } from '@trpc/server';
 import { getLogger } from '@/utils/logger';
-import { PaginationShema } from '../schema';
+import { RecipePaginationShema } from '../schema';
 
 const logger = getLogger();
 
@@ -227,13 +229,24 @@ export const recipeRouter = createTRPCRouter({
     }),
 
   getList: publicProcedure
-    .input(PaginationShema)
-    .query(async ({ ctx, input: { search, skip, take } }) => {
+    .input(RecipePaginationShema)
+    .query(async ({ ctx, input: { search, skip, take, categories } }) => {
+      const where: Prisma.RecipeWhereInput = {
+        title: { contains: search, mode: 'insensitive' },
+        categories: {
+          every: { AND: categories?.map((id) => ({ categoryId: id })) },
+        },
+      };
+
+      if (categories?.length) {
+        where.categories!.some = {}; // If categories are not empty then prevent recipes without categories
+      }
+
       const data = await ctx.db.recipe.findMany({
         skip,
         take,
         orderBy: { creationDate: 'desc' },
-        where: { title: { contains: search, mode: 'insensitive' } },
+        where,
         include: {
           categories: true,
           nutrients: true,
@@ -248,7 +261,7 @@ export const recipeRouter = createTRPCRouter({
       }));
 
       const count = await ctx.db.recipe.count({
-        where: { title: { contains: search, mode: 'insensitive' } },
+        where,
       });
 
       return { data: processedData, count };
