@@ -46,7 +46,7 @@ export default async function Page({ params: { id } }: PageProps) {
       </div>
 
       <div className="flex flex-col gap-4">
-        <Informations recipeId={id} />
+        <Informations recipeId={id} disableFavorite={!session} />
         <Separator className="bg-primary-foreground bg-slate-400" />
         <Steps recipeId={id} />
       </div>
