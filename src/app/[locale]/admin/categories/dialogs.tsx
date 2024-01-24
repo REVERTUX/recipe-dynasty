@@ -15,6 +15,7 @@ import { CreateCategory } from '@/server/api/schema';
 import FormInput from '@/app/ui/input/FormInput';
 import { type inferRouterOutputs } from '@trpc/server';
 import { type AppRouter } from '@/server/api/root';
+import { toast } from 'sonner';
 
 interface DeleteDialogProps {
   categoryId: string;
@@ -29,11 +30,16 @@ export function DeleteDialog({ categoryId, open, setOpen }: DeleteDialogProps) {
 
   const handleDelete = () => {
     mutate(
-      // TODO handle errors
       { id: categoryId },
       {
         onSuccess() {
           void utils.categories.getList.invalidate();
+          toast.success(t('categories.delete.notification.success'));
+        },
+        onError() {
+          toast.error(t('categories.delete.notification.error'));
+        },
+        onSettled() {
           setOpen(false);
         },
       }
@@ -90,6 +96,12 @@ export function EditDialog({ open, setOpen, category }: EditDialogProps) {
       {
         onSuccess() {
           void utils.categories.getList.invalidate();
+          toast.success(t('categories.edit.notification.success'));
+        },
+        onError() {
+          toast.error(t('categories.edit.notification.error'));
+        },
+        onSettled() {
           setOpen(false);
         },
       }
@@ -137,6 +149,12 @@ export function CreateDialog({ open, setOpen }: CreateDialogProps) {
     mutate(validatedFields.data, {
       onSuccess() {
         void utils.categories.getList.invalidate();
+        toast.success(t('categories.create.notification.success'));
+      },
+      onError() {
+        toast.error(t('categories.create.notification.error'));
+      },
+      onSettled() {
         setOpen(false);
       },
     });
