@@ -5,7 +5,12 @@ import Link from 'next/link';
 
 import { getServerAuthSession, userHasRole } from '@/server/auth';
 import { Button } from '@/components/ui/button';
-import { SheetTrigger, SheetContent, Sheet } from '@/components/ui/sheet';
+import {
+  SheetTrigger,
+  SheetContent,
+  Sheet,
+  SheetClose,
+} from '@/components/ui/sheet';
 import { getCurrentLocale, getScopedI18n } from '@/app/locales/server';
 import AvatarMenu from './avatar-menu';
 
@@ -69,18 +74,10 @@ export async function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right">
-                <div className="flex h-full flex-col justify-between">
+                <div className="flex h-full flex-col justify-between pb-4">
                   <div className="grid gap-4 p-4">
                     <div className="flex items-center justify-between">
-                      {session ? (
-                        <>
-                          <AvatarMenu user={session.user} />
-                        </>
-                      ) : (
-                        <Link href="/api/auth/signin">
-                          <Button>{t('signIn')}</Button>
-                        </Link>
-                      )}
+                      {session && <AvatarMenu user={session.user} />}
                     </div>
                     {userHasRole(session, 'ADMIN') && (
                       <Navlink
@@ -88,7 +85,7 @@ export async function Navbar() {
                         size="large"
                         className="text-center"
                       >
-                        {t('admin')}
+                        <SheetClose>{t('admin')}</SheetClose>
                       </Navlink>
                     )}
                     <Navlink
@@ -96,19 +93,26 @@ export async function Navbar() {
                       size="large"
                       className="text-center"
                     >
-                      {t('home')}
+                      <SheetClose>{t('home')}</SheetClose>
                     </Navlink>
                     <Navlink
                       href={`/${locale}/recipes`}
                       size="large"
                       className="text-center"
                     >
-                      {t('recipes')}
+                      <SheetClose>{t('recipes')}</SheetClose>
                     </Navlink>
 
                     {session && (
                       <Link href={`/${locale}/recipes/create`}>
-                        <Button fullwidth>{t('createRecipe')}</Button>
+                        <SheetClose className="w-full">
+                          <Button fullwidth>{t('createRecipe')}</Button>
+                        </SheetClose>
+                      </Link>
+                    )}
+                    {!session && (
+                      <Link href="/api/auth/signin">
+                        <Button className='w-full'>{t('signIn')}</Button>
                       </Link>
                     )}
                   </div>
