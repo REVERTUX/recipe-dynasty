@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { type Prisma } from '@prisma/client';
 import { getLogger } from '@/utils/logger';
 import { userHasRole } from '@/server/auth';
 import { TRPCError } from '@trpc/server';
@@ -12,25 +13,22 @@ export const categoriesRouter = createTRPCRouter({
   getList: publicProcedure
     .input(PaginationShema)
     .query(async ({ ctx, input: { search, skip, take } }) => {
+      const where: Prisma.CategoryWhereInput = {
+        OR: [
+          { name_en: { contains: search ?? '', mode: 'insensitive' } },
+          { name_pl: { contains: search ?? '', mode: 'insensitive' } },
+        ],
+      };
+
       const data = await ctx.db.category.findMany({
         skip,
         take,
         select: { name_pl: true, name_en: true, id: true },
-        where: {
-          OR: [
-            { name_en: { contains: search ?? '', mode: 'insensitive' } },
-            { name_pl: { contains: search ?? '', mode: 'insensitive' } },
-          ],
-        },
+        where,
       });
 
       const count = await ctx.db.category.count({
-        where: {
-          OR: [
-            { name_en: { contains: search ?? '', mode: 'insensitive' } },
-            { name_pl: { contains: search ?? '', mode: 'insensitive' } },
-          ],
-        },
+        where,
       });
 
       return { data, count };
