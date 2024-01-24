@@ -112,7 +112,7 @@ export async function Navbar() {
                     )}
                     {!session && (
                       <Link href="/api/auth/signin">
-                        <Button className='w-full'>{t('signIn')}</Button>
+                        <Button className="w-full">{t('signIn')}</Button>
                       </Link>
                     )}
                   </div>
