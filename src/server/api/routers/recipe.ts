@@ -1,14 +1,16 @@
+import { z } from 'zod';
+import { type Prisma } from '@prisma/client';
+
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from '@/server/api/trpc';
 import { CreateRecipe, EditRecipe } from '@/app/lib/recipe/shema';
-import { z } from 'zod';
 import { allowOnlyInProduction, ratelimit } from '@/server/ratelimiter';
 import { TRPCError } from '@trpc/server';
 import { getLogger } from '@/utils/logger';
-import { PaginationShema } from '../schema';
+import { RecipePaginationShema } from '../schema';
 
 const logger = getLogger();
 
@@ -227,13 +229,24 @@ export const recipeRouter = createTRPCRouter({
     }),
 
   getList: publicProcedure
-    .input(PaginationShema)
-    .query(async ({ ctx, input: { search, skip, take } }) => {
+    .input(RecipePaginationShema)
+    .query(async ({ ctx, input: { search, skip, take, categories } }) => {
+      const where: Prisma.RecipeWhereInput = {
+        title: { contains: search, mode: 'insensitive' },
+        categories: {
+          every: { AND: categories?.map((id) => ({ categoryId: id })) },
+        },
+      };
+
+      if (categories?.length) {
+        where.categories!.some = {}; // If categories are not empty then prevent recipes without categories
+      }
+
       const data = await ctx.db.recipe.findMany({
         skip,
         take,
         orderBy: { creationDate: 'desc' },
-        where: { title: { contains: search, mode: 'insensitive' } },
+        where,
         include: {
           categories: true,
           nutrients: true,
@@ -242,17 +255,22 @@ export const recipeRouter = createTRPCRouter({
         },
       });
 
+      const processedData = data.map((recipes) => ({
+        ...recipes,
+        favorite: !!recipes.favorite.length,
+      }));
+
       const count = await ctx.db.recipe.count({
-        where: { title: { contains: search, mode: 'insensitive' } },
+        where,
       });
 
-      return { data, count };
+      return { data: processedData, count };
     }),
 
   getOne: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input: { id } }) => {
-      return ctx.db.recipe.findFirstOrThrow({
+      const data = await ctx.db.recipe.findFirstOrThrow({
         where: { id: { equals: id } },
         include: {
           categories: {
@@ -262,8 +280,16 @@ export const recipeRouter = createTRPCRouter({
           },
           nutrients: { select: { carbs: true, fat: true, protein: true } },
           cookingTime: { select: { unit: true, value: true } },
+          favorite: true,
         },
       });
+
+      const processedData = {
+        ...data,
+        favorite: !!data.favorite.length,
+      };
+
+      return processedData;
     }),
 
   getStep: publicProcedure
@@ -273,5 +299,53 @@ export const recipeRouter = createTRPCRouter({
         where: { recipeId: { equals: id } },
         select: { steps: true },
       });
+    }),
+
+  favorite: protectedProcedure
+    .input(z.object({ id: z.string(), favorite: z.boolean() }))
+    .mutation(async ({ ctx, input: { id, favorite } }) => {
+      const userId = ctx.session.user.id;
+      const recipeId = id;
+
+      const recipeExist = await ctx.db.recipe.findFirst({
+        where: { id: { equals: recipeId } },
+        select: { userId: true },
+      });
+
+      if (!recipeExist) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
+
+      if (favorite) {
+        logger.info('Marking recipe as favorite', {
+          userId,
+          recipeId,
+        });
+
+        await ctx.db.favorite.create({
+          data: { recipeId, userId },
+        });
+
+        logger.info('Marked recipe as favorite', {
+          userId,
+          recipeId,
+        });
+      } else {
+        logger.info('Removing recipe as favorite', {
+          userId,
+          recipeId,
+        });
+
+        await ctx.db.favorite.delete({
+          where: { recipeId_userId: { recipeId, userId } },
+        });
+      }
+
+      logger.info('Removed recipe as favorite', {
+        userId,
+        recipeId,
+      });
+
+      return favorite;
     }),
 });

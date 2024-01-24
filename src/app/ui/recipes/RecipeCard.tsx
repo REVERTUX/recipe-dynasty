@@ -20,10 +20,21 @@ const FavoriteButton = dynamic(() => import('./FavoriteButton'));
 
 interface RecipeCardProps {
   recipe: inferRouterOutputs<AppRouter>['recipe']['getList']['data'][number];
+  disableFavorite: boolean;
 }
 
 async function RecipeCard({
-  recipe: { cookingTime, description, id, rating, servings, title, imageUrl },
+  recipe: {
+    cookingTime,
+    description,
+    id,
+    rating,
+    servings,
+    title,
+    imageUrl,
+    favorite,
+  },
+  disableFavorite,
 }: RecipeCardProps) {
   return (
     <Card className="flex w-full max-w-3xl cursor-pointer flex-col justify-center shadow-md transition-shadow hover:shadow-2xl">
@@ -36,7 +47,11 @@ async function RecipeCard({
         <CardHeader>
           <CardTitle className="text-3xl">
             {title}
-            <FavoriteButton favorite={false} recipeId={id} />
+            <FavoriteButton
+              favorite={favorite}
+              recipeId={id}
+              disabled={disableFavorite}
+            />
           </CardTitle>
           <CardDescription className="text-base">{description}</CardDescription>
         </CardHeader>
