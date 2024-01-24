@@ -1,17 +1,21 @@
 import Image from 'next/image';
 import { BiDish } from 'react-icons/bi';
 import { LuClock } from 'react-icons/lu';
+import dynamic from 'next/dynamic';
 
 import { getTranslationByLocale } from '@/app/lib/utils';
 import { getCurrentLocale, getScopedI18n } from '@/app/locales/server';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/trpc/server';
 
+const FavoriteButton = dynamic(() => import('@/app/ui/recipes/FavoriteButton'));
+
 interface InformationsProps {
   recipeId: string;
+  disableFavorite: boolean;
 }
 
-async function Informations({ recipeId }: InformationsProps) {
+async function Informations({ recipeId, disableFavorite }: InformationsProps) {
   const {
     calories,
     categories,
@@ -21,6 +25,7 @@ async function Informations({ recipeId }: InformationsProps) {
     imageUrl,
     nutrients,
     // rating,
+    favorite,
     servings,
     title,
   } = await api.recipe.getOne.query({ id: recipeId });
@@ -30,6 +35,13 @@ async function Informations({ recipeId }: InformationsProps) {
 
   return (
     <div className="flex flex-col gap-2 py-2">
+      <div className="mr-2">
+        <FavoriteButton
+          favorite={favorite}
+          recipeId={recipeId}
+          disabled={disableFavorite}
+        />
+      </div>
       {imageUrl && (
         <Image
           src={imageUrl}
@@ -76,18 +88,20 @@ async function Informations({ recipeId }: InformationsProps) {
             </li>
           </ul>
         </div>
-        <div>
-          <h3 className="mb-1 text-xl font-semibold">
-            {t('categories.title')}
-          </h3>
-          <div className="flex flex-wrap gap-1">
-            {categories.map(({ category: { id, name_en, name_pl } }) => (
-              <Badge key={id} size="big" className="hover:bg-primary">
-                {getTranslationByLocale(locale, name_en, name_pl)}
-              </Badge>
-            ))}
+        {categories.length > 0 && (
+          <div>
+            <h3 className="mb-1 text-xl font-semibold">
+              {t('categories.title')}
+            </h3>
+            <div className="flex flex-wrap gap-1">
+              {categories.map(({ category: { id, name_en, name_pl } }) => (
+                <Badge key={id} size="big" className="hover:bg-primary">
+                  {getTranslationByLocale(locale, name_en, name_pl)}
+                </Badge>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
