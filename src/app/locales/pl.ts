@@ -75,6 +75,10 @@ export default {
     previous: 'Poprzednia',
     search: 'Szukaj',
   },
+  filter: {
+    filters: 'Filtry',
+    categories: 'Kategorie',
+  },
   common: {
     delete: 'Usuń',
     cancel: 'Anuluj',
