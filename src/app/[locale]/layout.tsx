@@ -35,13 +35,13 @@ export default function RootLayout({ children, params: { locale } }: Props) {
       <body
         className={`font-sans ${inter.variable} bg-gradient-to-br dark:from-slate-900 dark:to-gray-700`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <I18nProviderClient locale={locale}>
+        <I18nProviderClient locale={locale}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
             <AxiomWebVitals />
             <Navbar />
@@ -49,8 +49,8 @@ export default function RootLayout({ children, params: { locale } }: Props) {
               {children}
             </TRPCReactProvider>
             <Footer />
-          </I18nProviderClient>
-        </ThemeProvider>
+          </ThemeProvider>
+        </I18nProviderClient>
       </body>
     </html>
   );
