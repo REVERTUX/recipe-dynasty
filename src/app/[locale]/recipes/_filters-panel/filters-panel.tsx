@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 
 const CategoriesFilter = dynamic(() => import('./categories-filter'));
+const FavoriteFilter = dynamic(() => import('./favorite-filter'));
 
 async function FiltersPanel() {
   const t = await getScopedI18n('filter');
@@ -17,7 +18,8 @@ async function FiltersPanel() {
         <CardHeader className="p-2 md:px-5 md:py-3">
           <CardTitle className="text-2xl">{t('filters')}</CardTitle>
         </CardHeader>
-        <CardContent className="p-2 md:px-5 md:py-3 md:pr-1">
+        <CardContent className="flex flex-col gap-4 p-2 md:px-5 md:py-3 md:pr-1">
+          <FavoriteFilter />
           <CategoriesFilter />
         </CardContent>
       </Card>
@@ -34,6 +36,7 @@ async function FiltersPanel() {
             <h3 className="text-2xl font-semibold tracking-tight">
               {t('filters')}
             </h3>
+            <FavoriteFilter />
             <CategoriesFilter />
           </SheetContent>
         </Sheet>

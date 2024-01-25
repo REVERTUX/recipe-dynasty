@@ -78,6 +78,7 @@ export default {
   filter: {
     filters: 'Filtry',
     categories: 'Kategorie',
+    favorite: 'Ulubione',
   },
   common: {
     delete: 'Usuń',
