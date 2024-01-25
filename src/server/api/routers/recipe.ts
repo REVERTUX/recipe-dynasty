@@ -230,34 +230,41 @@ export const recipeRouter = createTRPCRouter({
 
   getList: publicProcedure
     .input(RecipePaginationShema)
-    .query(async ({ ctx, input: { search, skip, take, categories } }) => {
-      const where: Prisma.RecipeWhereInput = {
-        title: { contains: search, mode: 'insensitive' },
-        categories: {},
-      };
+    .query(
+      async ({ ctx, input: { search, skip, take, categories, favorite } }) => {
+        const where: Prisma.RecipeWhereInput = {
+          title: { contains: search, mode: 'insensitive' },
+          categories: {},
+          favorite: {},
+        };
 
-      if (categories?.length) {
-        where.categories!.some = { categoryId: { in: categories } }; // TODO should only contain selected categories
+        if (categories?.length) {
+          where.categories!.some = { categoryId: { in: categories } }; // TODO should only contain selected categories
+        }
+
+        if (favorite) {
+          where.favorite!.some = {};
+        }
+
+        const data = await ctx.db.recipe.findMany({
+          skip,
+          take,
+          orderBy: { creationDate: 'desc' },
+          where,
+          include: {
+            categories: true,
+            nutrients: true,
+            cookingTime: true,
+          },
+        });
+
+        const count = await ctx.db.recipe.count({
+          where,
+        });
+
+        return { data, count };
       }
-
-      const data = await ctx.db.recipe.findMany({
-        skip,
-        take,
-        orderBy: { creationDate: 'desc' },
-        where,
-        include: {
-          categories: true,
-          nutrients: true,
-          cookingTime: true,
-        },
-      });
-
-      const count = await ctx.db.recipe.count({
-        where,
-      });
-
-      return { data, count };
-    }),
+    ),
 
   getOne: publicProcedure
     .input(z.object({ id: z.string() }))

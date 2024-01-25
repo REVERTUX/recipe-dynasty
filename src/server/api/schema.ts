@@ -20,4 +20,5 @@ export const PaginationShema = z.object({
 
 export const RecipePaginationShema = PaginationShema.extend({
   categories: z.string().array().optional(),
+  favorite: z.boolean().optional(),
 });
