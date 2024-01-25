@@ -25,7 +25,6 @@ async function Informations({ recipeId, disableFavorite }: InformationsProps) {
     imageUrl,
     nutrients,
     // rating,
-    favorite,
     servings,
     title,
   } = await api.recipe.getOne.query({ id: recipeId });
@@ -36,11 +35,7 @@ async function Informations({ recipeId, disableFavorite }: InformationsProps) {
   return (
     <div className="flex flex-col gap-2 py-2">
       <div className="mr-2">
-        <FavoriteButton
-          favorite={favorite}
-          recipeId={recipeId}
-          disabled={disableFavorite}
-        />
+        <FavoriteButton recipeId={recipeId} disabled={disableFavorite} />
       </div>
       {imageUrl && (
         <Image
