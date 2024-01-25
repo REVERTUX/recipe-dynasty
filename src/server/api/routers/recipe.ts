@@ -233,13 +233,11 @@ export const recipeRouter = createTRPCRouter({
     .query(async ({ ctx, input: { search, skip, take, categories } }) => {
       const where: Prisma.RecipeWhereInput = {
         title: { contains: search, mode: 'insensitive' },
-        categories: {
-          every: { AND: categories?.map((id) => ({ categoryId: id })) },
-        },
+        categories: {},
       };
 
       if (categories?.length) {
-        where.categories!.some = {}; // If categories are not empty then prevent recipes without categories
+        where.categories!.some = { categoryId: { in: categories } }; // TODO should only contain selected categories
       }
 
       const data = await ctx.db.recipe.findMany({
