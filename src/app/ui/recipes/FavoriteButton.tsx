@@ -1,22 +1,23 @@
 'use client';
 
-import { type MouseEvent, useState } from 'react';
+import { type MouseEvent } from 'react';
 import { HiOutlineStar } from 'react-icons/hi2';
 import clsx from 'clsx';
 import { api } from '@/trpc/react';
 
 interface FavoriteButtonProps {
-  favorite: boolean;
   recipeId: string;
   disabled?: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function FavoriteButton({ favorite, recipeId, disabled }: FavoriteButtonProps) {
-  const [active, setActive] = useState<boolean>(favorite);
-  const { mutate, isLoading } = api.recipe.favorite.useMutation({
-    onSuccess(data) {
-      setActive(data);
+function FavoriteButton({ recipeId, disabled }: FavoriteButtonProps) {
+  const { data: favorite, isLoading: isLoadingFavorite } =
+    api.favorite.getOne.useQuery({ recipeId });
+
+  const utils = api.useUtils();
+  const { mutate, isLoading } = api.favorite.set.useMutation({
+    onSuccess() {
+      void utils.favorite.getOne.invalidate({ recipeId });
     },
   });
 
@@ -24,7 +25,7 @@ function FavoriteButton({ favorite, recipeId, disabled }: FavoriteButtonProps) {
     e.stopPropagation();
     e.preventDefault();
     if (isLoading) return;
-    mutate({ id: recipeId, favorite: !active });
+    mutate({ id: recipeId, favorite: !favorite });
   };
 
   return (
@@ -32,13 +33,13 @@ function FavoriteButton({ favorite, recipeId, disabled }: FavoriteButtonProps) {
       <button
         type="button"
         onClick={handleClick}
-        disabled={disabled ?? isLoading}
+        disabled={disabled ?? (isLoading || isLoadingFavorite)}
         aria-label="favorite"
       >
         <HiOutlineStar
           size={24}
           className={clsx('transition-colors', {
-            'fill-yellow-400 text-yellow-400': active,
+            'fill-yellow-400 text-yellow-400': favorite,
           })}
         />
       </button>
