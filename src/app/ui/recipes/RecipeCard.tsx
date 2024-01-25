@@ -24,16 +24,7 @@ interface RecipeCardProps {
 }
 
 async function RecipeCard({
-  recipe: {
-    cookingTime,
-    description,
-    id,
-    rating,
-    servings,
-    title,
-    imageUrl,
-    favorite,
-  },
+  recipe: { cookingTime, description, id, rating, servings, title, imageUrl },
   disableFavorite,
 }: RecipeCardProps) {
   return (
@@ -47,11 +38,7 @@ async function RecipeCard({
         <CardHeader>
           <CardTitle className="text-3xl">
             {title}
-            <FavoriteButton
-              favorite={favorite}
-              recipeId={id}
-              disabled={disableFavorite}
-            />
+            <FavoriteButton recipeId={id} disabled={disableFavorite} />
           </CardTitle>
           <CardDescription className="text-base">{description}</CardDescription>
         </CardHeader>
