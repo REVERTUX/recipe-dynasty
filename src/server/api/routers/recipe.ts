@@ -198,7 +198,11 @@ export const recipeRouter = createTRPCRouter({
         where: { recipeId },
       });
 
-      const deleteReviews = ctx.db.review.deleteMany({
+      const deleteRecipeRratingAvg = ctx.db.recipeRatingAvg.deleteMany({
+        where: { recipeId },
+      });
+
+      const deleteRecipeRrating = ctx.db.recipeRating.deleteMany({
         where: { recipeId },
       });
 
@@ -215,7 +219,8 @@ export const recipeRouter = createTRPCRouter({
           deleteSteps,
           deleteNutrients,
           deleteFavorite,
-          deleteReviews,
+          deleteRecipeRratingAvg,
+          deleteRecipeRrating,
           deleteRecipe,
         ]);
         logger.info('Deleted recipe', { recipeId, userId });
