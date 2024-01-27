@@ -43,16 +43,16 @@ model Session {
 }
 
 model User {
-    id            String     @id @default(cuid())
+    id            String         @id @default(cuid())
     name          String?
-    email         String?    @unique
+    email         String?        @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
     favorite      Favorite[]
     recipe        Recipe[]
-    review        Review[]
+    recipeRating  RecipeRating[]
     userRole      UserRole[]
 }
 
@@ -78,40 +78,49 @@ model VerificationToken {
 }
 
 model Recipe {
-    id           String           @id @default(cuid())
-    title        String
-    description  String
-    creationDate DateTime         @default(now())
-    lastUpdated  DateTime?
-    servings     Int
-    rating       Float?
-    calories     Float?
-    imageUrl     String?
-    userId       String
-    cookingTime  CookingTime?
-    favorite     Favorite[]
-    nutrients    Nutrients?
+    id              String           @id @default(cuid())
+    title           String
+    description     String
+    creationDate    DateTime         @default(now())
+    lastUpdated     DateTime?        @updatedAt
+    servings        Int
+    calories        Float?
+    imageUrl        String?
+    userId          String
+    cookingTime     CookingTime?
+    favorite        Favorite[]
+    nutrients       Nutrients?
     // image        File?            @relation(fields: [imageId], references: [id])
-    user         User             @relation(fields: [userId], references: [id])
-    categories   RecipeCategory[]
-    reviews      Review[]
-    steps        RecipeSteps[]
+    user            User             @relation(fields: [userId], references: [id])
+    categories      RecipeCategory[]
+    recipeRatings   RecipeRating[]
+    steps           RecipeSteps[]
+    RecipeRatingAvg RecipeRatingAvg?
 
     @@index([id])
     @@index([title, description])
 }
 
-model Review {
-    id           String   @id @default(cuid())
-    rating       Float
-    comment      String
-    creationDate DateTime @default(now())
-    recipeId     String
-    userId       String
-    recipe       Recipe   @relation(fields: [recipeId], references: [id])
-    user         User     @relation(fields: [userId], references: [id])
+model RecipeRating {
+    value     Float
+    createdAt DateTime  @default(now())
+    updatedAt DateTime? @updatedAt
+    recipeId  String
+    userId    String
+    recipe    Recipe    @relation(fields: [recipeId], references: [id])
+    user      User      @relation(fields: [userId], references: [id])
 
-    @@index([id])
+    @@unique([recipeId, userId])
+    @@index([recipeId, userId])
+}
+
+model RecipeRatingAvg {
+    recipeId String @unique
+    value    Float
+    count    Int
+    recipe   Recipe @relation(fields: [recipeId], references: [id])
+
+    @@index([recipeId])
 }
 
 model CookingTime {
@@ -134,8 +143,8 @@ model RecipeCategory {
     category   Category @relation(fields: [categoryId], references: [id])
     recipe     Recipe   @relation(fields: [recipeId], references: [id])
 
-    @@index([recipeId])
     @@unique([recipeId, categoryId])
+    @@index([recipeId])
 }
 
 model Nutrients {
