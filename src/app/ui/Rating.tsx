@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { HiOutlineStar } from 'react-icons/hi';
+import { TbStarHalfFilled, TbStar } from 'react-icons/tb';
 
 interface RatingProps {
   value: number;
@@ -15,13 +15,21 @@ function Rating({ value, max }: RatingProps) {
     const getStar = (_value: number) => {
       const active = _value <= Math.round(value);
 
+      const isHalfStar =
+        active &&
+        value !== _value &&
+        Math.ceil(value) === _value &&
+        value <= _value + 0.5;
+
+      const Icon = isHalfStar ? TbStarHalfFilled : TbStar;
+
       return (
-        <HiOutlineStar
+        <Icon
           key={_value}
           height={24}
           width={24}
           className={clsx('transition-colors', {
-            'fill-yellow-400 text-yellow-400': active,
+            'fill-yellow-500 text-yellow-500': active,
           })}
         />
       );
@@ -36,14 +44,7 @@ function Rating({ value, max }: RatingProps) {
     return arr;
   };
 
-  return (
-    <div className="flex items-center">
-      {renderIcons()}
-      <p className="ms-1 text-base font-medium text-gray-600 dark:text-gray-300">
-        {value} out of {max}
-      </p>
-    </div>
-  );
+  return <div className="flex items-center">{renderIcons()}</div>;
 }
 
 export default Rating;
