@@ -7,6 +7,7 @@ import { getTranslationByLocale } from '@/app/lib/utils';
 import { getCurrentLocale, getScopedI18n } from '@/app/locales/server';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/trpc/server';
+import RecipeRating from '@/app/ui/recipes/recipe-rating';
 
 const FavoriteButton = dynamic(() => import('@/app/ui/recipes/FavoriteButton'));
 
@@ -24,7 +25,6 @@ async function Informations({ recipeId, disableFavorite }: InformationsProps) {
     description,
     imageUrl,
     nutrients,
-    // rating,
     servings,
     title,
   } = await api.recipe.getOne.query({ id: recipeId });
@@ -65,7 +65,9 @@ async function Informations({ recipeId, disableFavorite }: InformationsProps) {
             <span>{servings}</span>
           </div>
         </div>
-
+        <div className="flex gap-2">
+          <RecipeRating id={recipeId} />
+        </div>
         <div>
           <h3 className="mb-1 text-xl font-semibold">{t('nutrients')}</h3>
           <ul>

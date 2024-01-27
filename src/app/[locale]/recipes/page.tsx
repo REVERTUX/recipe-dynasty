@@ -14,6 +14,7 @@ interface PageProps {
     search?: string;
     page?: string;
     category?: string | string[];
+    favorite?: string;
   };
 }
 
@@ -31,6 +32,7 @@ function stringToArray(value: string | string[] | undefined) {
 
 export default async function Page({ searchParams }: PageProps) {
   const categories = stringToArray(searchParams?.category);
+  const favorite = searchParams?.favorite !== undefined;
   const search = searchParams?.search ?? '';
   const page = Number(searchParams?.page) || 1;
   const skip = (page - 1) * PAGE_ITEMS_COUNT;
@@ -40,6 +42,7 @@ export default async function Page({ searchParams }: PageProps) {
     take,
     skip,
     categories,
+    favorite,
   });
   const session = await getServerAuthSession();
 
@@ -48,9 +51,6 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <div className="m-auto flex w-full flex-col justify-center gap-2 px-2 pb-2 pt-4 md:flex-row xl:px-0">
       <FiltersPanel />
-
-      {/* <div className='px-2'>
-      </div> */}
       <div className="flex max-w-3xl flex-1 flex-col justify-center gap-2">
         <div className="w-full ">
           <Search placeholder={t('search')} />

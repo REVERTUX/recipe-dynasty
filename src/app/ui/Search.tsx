@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 'use client';
 
 import type { ChangeEvent } from 'react';
@@ -19,9 +18,8 @@ interface SearchProps {
 export default function Search({ placeholder, className }: SearchProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const router = useRouter();
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const handleSearch = useDebouncedCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const search = event.target.value;
@@ -33,7 +31,7 @@ export default function Search({ placeholder, className }: SearchProps) {
       } else {
         params.delete('search');
       }
-      replace(`${pathname}?${params.toString()}` as never);
+      router.replace(`${pathname}?${params.toString()}` as never);
     },
     SEARCH_DEBOUNCE_MS
   );

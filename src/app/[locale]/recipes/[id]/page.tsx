@@ -3,13 +3,14 @@ import dynamic from 'next/dynamic';
 
 import { Separator } from '@/components/ui/separator';
 import { api } from '@/trpc/server';
+import { getServerAuthSession, userHasRole } from '@/server/auth';
 
 import Informations from './Informations';
 import Steps from './Steps';
 import EditLink from './EditLink';
-import { getServerAuthSession, userHasRole } from '@/server/auth';
 
 const DeleteRecipe = dynamic(() => import('./delete'), { ssr: false });
+const RateRecipe = dynamic(() => import('./rate-recipe'), { ssr: false });
 
 interface PageProps {
   params: {
@@ -49,6 +50,7 @@ export default async function Page({ params: { id } }: PageProps) {
         <Informations recipeId={id} disableFavorite={!session} />
         <Separator className="bg-primary-foreground bg-slate-400" />
         <Steps recipeId={id} />
+        {session && <RateRecipe recipeId={id} />}
       </div>
     </>
   );
