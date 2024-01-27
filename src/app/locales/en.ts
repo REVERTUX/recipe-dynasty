@@ -70,6 +70,20 @@ export default {
       },
     },
   },
+  reviews: {
+    reviews: 'reviews',
+    'reviews#zero': 'reviews',
+    'reviews#one': 'review',
+    'reviews#two': 'reviews',
+    'reviews#few': 'reviews',
+    'reviews#many': 'reviews',
+    'reviews#other': 'reviews',
+    rate: 'Rate this recipe!',
+    notification: {
+      success: 'Updated recipe rating to {rating}',
+      error: 'Failed to set recipe rating',
+    },
+  },
   pagination: {
     next: 'Next',
     previous: 'Previous',

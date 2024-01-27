@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { LuClock } from 'react-icons/lu';
 import { BiDish } from 'react-icons/bi';
 
-import { type inferRouterOutputs } from '@trpc/server';
-import { type AppRouter } from '@/server/api/root';
+import { type RouterOutputs } from '@/trpc/shared';
 import {
   Card,
   CardContent,
@@ -14,17 +13,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import Rating from '../Rating';
+import RecipeRating from './recipe-rating';
 
 const FavoriteButton = dynamic(() => import('./FavoriteButton'));
 
 interface RecipeCardProps {
-  recipe: inferRouterOutputs<AppRouter>['recipe']['getList']['data'][number];
+  recipe: RouterOutputs['recipe']['getList']['data'][number];
   disableFavorite: boolean;
 }
 
 async function RecipeCard({
-  recipe: { cookingTime, description, id, rating, servings, title, imageUrl },
+  recipe: { cookingTime, description, id, servings, title, imageUrl },
   disableFavorite,
 }: RecipeCardProps) {
   return (
@@ -43,11 +42,7 @@ async function RecipeCard({
           <CardDescription className="text-base">{description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <RecipeMeta
-            cookingTime={cookingTime}
-            servings={servings}
-            rating={rating}
-          />
+          <RecipeMeta cookingTime={cookingTime} servings={servings} id={id} />
         </CardContent>
       </Link>
     </Card>
@@ -58,10 +53,10 @@ export default RecipeCard;
 
 type RecipeMetaProps = Pick<
   RecipeCardProps['recipe'],
-  'cookingTime' | 'servings' | 'rating'
+  'cookingTime' | 'servings' | 'id'
 >;
 
-function RecipeMeta({ cookingTime, servings, rating }: RecipeMetaProps) {
+async function RecipeMeta({ cookingTime, servings, id }: RecipeMetaProps) {
   return (
     <div className="flex flex-col gap-2 text-lg">
       <div className="flex gap-4">
@@ -78,9 +73,7 @@ function RecipeMeta({ cookingTime, servings, rating }: RecipeMetaProps) {
           <span>{servings}</span>
         </div>
       </div>
-      <div>
-        <Rating max={5} value={rating ?? 0} />
-      </div>
+      <RecipeRating id={id} />
     </div>
   );
 }

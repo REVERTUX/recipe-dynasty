@@ -70,6 +70,20 @@ export default {
       },
     },
   },
+  reviews: {
+    reviews: 'oceny',
+    'reviews#zero': 'ocen',
+    'reviews#one': 'ocena',
+    'reviews#two': 'oceny',
+    'reviews#few': 'ocen',
+    'reviews#many': 'ocen',
+    'reviews#other': 'ocen',
+    rate: 'Oceń ten przepis!',
+    notification: {
+      success: 'Zaktualizowano ocenę receptury na {rating}',
+      error: 'Nie udało się ustawić oceny receptury',
+    },
+  },
   pagination: {
     next: 'Następna',
     previous: 'Poprzednia',
