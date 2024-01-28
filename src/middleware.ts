@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
 
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   const cspHeader = `
-    default-src 'self' '*.google.com' 'unsafe-inline' 'unsafe-eval';
+    default-src 'self' *.google.com 'unsafe-inline' 'unsafe-eval';
     script-src 'self' ${
       process.env.NODE_ENV === 'production'
         ? `'strict-dynamic' 'nonce-${nonce}'`
@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https:;
     font-src 'self';
-    connect-src 'self';
+    connect-src 'self' https://uploadthing-prod.s3.us-west-2.amazonaws.com https://uploadthing.com;
     object-src 'none';
     base-uri 'self';
     frame-ancestors 'none';
