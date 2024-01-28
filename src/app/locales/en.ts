@@ -32,9 +32,13 @@ export default {
     fat: 'Fat',
     hours: 'hour(s)',
     uploadImage: {
-      upload: 'Click to upload',
+      uploadClick: 'Click to upload',
       uploaded: 'Image uploaded',
       files: 'PNG orJPG file',
+      resize: 'Resize image',
+      cancel: 'Cancel',
+      upload: 'Upload',
+      uploading: 'Uploading',
     },
     delete: {
       title: 'Delete recipe',
