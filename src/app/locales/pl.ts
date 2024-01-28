@@ -32,9 +32,13 @@ export default {
     fat: 'Tłuszcze',
     hours: 'godzina(y)',
     uploadImage: {
-      upload: 'Kliknij, aby przesłać obraz',
+      uploadClick: 'Kliknij, aby przesłać obraz',
       uploaded: 'Przesłany obraz',
       files: 'Obraz PNG lub JPG',
+      resize: 'Dostosuj obraz',
+      cancel: 'Anuluj',
+      upload: 'Prześlij',
+      uploading: 'Przesyłąnie',
     },
     delete: {
       title: 'Usuń przepis',
