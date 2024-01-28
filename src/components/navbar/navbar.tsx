@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { FiMenu } from 'react-icons/fi';
 
 import { getServerAuthSession, userHasRole } from '@/server/auth';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,6 @@ const ThemeModeToggle = dynamic(() => import('./theme-mode-toggle'));
 const Navlink = dynamic(() => import('./navlink'));
 
 export async function Navbar() {
-  const session = await getServerAuthSession();
   const t = await getScopedI18n('navigation');
   const locale = getCurrentLocale();
 
@@ -33,13 +33,27 @@ export async function Navbar() {
             <img src="/logo.png" className="mr-3 h-6 sm:h-9" alt="Logo" />
             {t('title')}
           </Link>
-          <div className="hidden items-center space-x-10 md:flex">
-            {userHasRole(session, 'ADMIN') && (
-              <Navlink href={`/${locale}/admin`}>{t('admin')}</Navlink>
-            )}
-            <Navlink href={`/${locale}`}> {t('home')}</Navlink>
-            <Navlink href={`/${locale}/recipes`}>{t('recipes')}</Navlink>
-            {/* <Navlink
+          <DesktopNav />
+          <MobileNav />
+        </div>
+      </nav>
+    </div>
+  );
+}
+
+async function DesktopNav() {
+  const session = await getServerAuthSession();
+  const t = await getScopedI18n('navigation');
+  const locale = getCurrentLocale();
+
+  return (
+    <div className="hidden items-center space-x-10 md:flex">
+      {userHasRole(session, 'ADMIN') && (
+        <Navlink href={`/${locale}/admin`}>{t('admin')}</Navlink>
+      )}
+      <Navlink href={`/${locale}`}> {t('home')}</Navlink>
+      <Navlink href={`/${locale}/recipes`}>{t('recipes')}</Navlink>
+      {/* <Navlink
               href="#"
             >
               Categories
@@ -49,77 +63,82 @@ export async function Navbar() {
             >
               Favorites
             </Navlink> */}
-            <div className="flex gap-2.5">
-              {session ? (
-                <>
-                  <Link href={`/${locale}/recipes/create`}>
-                    <Button>{t('createRecipe')}</Button>
-                  </Link>
-                  <AvatarMenu user={session.user} />
-                </>
-              ) : (
-                <Link href="/api/auth/signin">
-                  <Button>{t('signIn')}</Button>
+      <div className="flex gap-2.5">
+        {userHasRole(session, 'MEMBER') && (
+          <Link href={`/${locale}/recipes/create`}>
+            <Button>{t('createRecipe')}</Button>
+          </Link>
+        )}
+        {session ? (
+          <AvatarMenu user={session.user} />
+        ) : (
+          <Link href="/api/auth/signin">
+            <Button>{t('signIn')}</Button>
+          </Link>
+        )}
+        <ThemeModeToggle />
+      </div>
+    </div>
+  );
+}
+
+async function MobileNav() {
+  const session = await getServerAuthSession();
+  const t = await getScopedI18n('navigation');
+  const locale = getCurrentLocale();
+
+  return (
+    <div className="md:hidden">
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button size="icon" variant="ghost">
+            <FiMenu className="h-6 w-6" />
+            <span className="sr-only">Toggle navigation menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right" className="p-2 sm:p-6">
+          <div className="flex h-full flex-col justify-between pb-4">
+            <div className="grid gap-4 p-2 sm:p-4">
+              <div className="flex items-center justify-between">
+                {session && <AvatarMenu user={session.user} />}
+              </div>
+              {userHasRole(session, 'ADMIN') && (
+                <Navlink
+                  href={`/${locale}/admin`}
+                  size="large"
+                  className="text-center"
+                >
+                  <SheetClose>{t('admin')}</SheetClose>
+                </Navlink>
+              )}
+              <Navlink href={`/${locale}`} size="large" className="text-center">
+                <SheetClose>{t('home')}</SheetClose>
+              </Navlink>
+              <Navlink
+                href={`/${locale}/recipes`}
+                size="large"
+                className="text-center"
+              >
+                <SheetClose>{t('recipes')}</SheetClose>
+              </Navlink>
+
+              {userHasRole(session, 'MEMBER') && (
+                <Link href={`/${locale}/recipes/create`}>
+                  <SheetClose className="w-full">
+                    <Button fullwidth>{t('createRecipe')}</Button>
+                  </SheetClose>
                 </Link>
               )}
+              {!session && (
+                <Link href="/api/auth/signin">
+                  <Button className="w-full">{t('signIn')}</Button>
+                </Link>
+              )}
+            </div>
+            <div className="text-right">
               <ThemeModeToggle />
             </div>
-          </div>
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button size="icon" variant="ghost">
-                  <MenuIcon className="h-6 w-6" />
-                  <span className="sr-only">Toggle navigation menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="p-2 sm:p-6">
-                <div className="flex h-full flex-col justify-between pb-4">
-                  <div className="grid gap-4 p-2 sm:p-4">
-                    <div className="flex items-center justify-between">
-                      {session && <AvatarMenu user={session.user} />}
-                    </div>
-                    {userHasRole(session, 'ADMIN') && (
-                      <Navlink
-                        href={`/${locale}/admin`}
-                        size="large"
-                        className="text-center"
-                      >
-                        <SheetClose>{t('admin')}</SheetClose>
-                      </Navlink>
-                    )}
-                    <Navlink
-                      href={`/${locale}`}
-                      size="large"
-                      className="text-center"
-                    >
-                      <SheetClose>{t('home')}</SheetClose>
-                    </Navlink>
-                    <Navlink
-                      href={`/${locale}/recipes`}
-                      size="large"
-                      className="text-center"
-                    >
-                      <SheetClose>{t('recipes')}</SheetClose>
-                    </Navlink>
-
-                    {session && (
-                      <Link href={`/${locale}/recipes/create`}>
-                        <SheetClose className="w-full">
-                          <Button fullwidth>{t('createRecipe')}</Button>
-                        </SheetClose>
-                      </Link>
-                    )}
-                    {!session && (
-                      <Link href="/api/auth/signin">
-                        <Button className="w-full">{t('signIn')}</Button>
-                      </Link>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <ThemeModeToggle />
-                  </div>
-                  {/* <Navlink
+            {/* <Navlink
                     href="#"
                   >
                     Categories
@@ -130,33 +149,9 @@ export async function Navbar() {
                   >
                     Favorites
                   </Navlink> */}
-                </div>
-              </SheetContent>
-            </Sheet>
           </div>
-        </div>
-      </nav>
+        </SheetContent>
+      </Sheet>
     </div>
-  );
-}
-
-function MenuIcon({ className }: { className: string }) {
-  return (
-    <svg
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="4" x2="20" y1="12" y2="12" />
-      <line x1="4" x2="20" y1="6" y2="6" />
-      <line x1="4" x2="20" y1="18" y2="18" />
-    </svg>
   );
 }

@@ -92,6 +92,7 @@ export const userHasRole = (
   role: UserRole['role']
 ): boolean => {
   if (!session) return false;
+  if (session.user.roles.includes('ADMIN')) return true;
   if (session.user.roles.includes(role)) return true;
   return false;
 };
