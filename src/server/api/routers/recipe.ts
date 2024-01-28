@@ -19,6 +19,7 @@ export const recipeRouter = createTRPCRouter({
     .input(CreateRecipe)
     .mutation(async ({ ctx, input }) => {
       const { nutrients, cookingTime } = input;
+      const userId = ctx.session.user.id;
 
       if (allowOnlyInProduction()) {
         const { success } = await ratelimit.createRecipe.limit(
@@ -31,6 +32,14 @@ export const recipeRouter = createTRPCRouter({
           throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
         }
       }
+
+      if (!ctx.session.user.roles.includes('MEMBER')) {
+        logger.error('User tried to create recipe without valid rights', {
+          userId,
+        });
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
       logger.info('Creating recipe', { userId: ctx.session.user.id });
 
       const recipe = await ctx.db.recipe.create({
