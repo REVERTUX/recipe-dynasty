@@ -23,7 +23,7 @@ export async function Navbar() {
   const locale = getCurrentLocale();
 
   return (
-    <div className="sticky top-0 z-50 w-full bg-white shadow-md dark:bg-gray-900">
+    <div className="w-full bg-white shadow-md dark:bg-gray-900">
       <nav className="container mx-auto px-6 py-3 md:py-4">
         <div className="flex items-center justify-between">
           <Link
@@ -73,9 +73,9 @@ export async function Navbar() {
                   <span className="sr-only">Toggle navigation menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
+              <SheetContent side="right" className="p-2 sm:p-6">
                 <div className="flex h-full flex-col justify-between pb-4">
-                  <div className="grid gap-4 p-4">
+                  <div className="grid gap-4 p-2 sm:p-4">
                     <div className="flex items-center justify-between">
                       {session && <AvatarMenu user={session.user} />}
                     </div>
