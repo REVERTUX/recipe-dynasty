@@ -52,9 +52,11 @@ function CreateForm() {
   return (
     <form
       action={dispatch}
-      className="flex max-w-5xl grow flex-col gap-4 px-2 py-4"
+      className="flex max-w-5xl grow flex-col gap-2 px-2 py-4 md:gap-4"
     >
-      <h1 className="mb-4 text-4xl font-bold">{t('createTitle')}</h1>
+      <h1 className="mb-2 text-3xl font-bold md:mb-4 md:text-4xl">
+        {t('createTitle')}
+      </h1>
       <BasicInfoForm state={state} />
       <CategoriesForm ref={categoriesRef} />
       <Editor markdown={getMarkdownContent} editorRef={editorRef} />

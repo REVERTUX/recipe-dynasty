@@ -8,6 +8,8 @@ interface LayoutProps {
 }
 export default function Layout({ children }: LayoutProps) {
   return (
-    <Card className="mx-auto my-10 max-w-5xl rounded-lg p-8">{children}</Card>
+    <Card className="mx-auto my-4 max-w-5xl rounded-lg md:my-10 md:p-8">
+      {children}
+    </Card>
   );
 }
