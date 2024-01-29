@@ -35,7 +35,7 @@ async function RecipeCard({
           </div>
         )}
         <CardHeader>
-          <CardTitle className="text-3xl">
+          <CardTitle className="flex justify-between align-top text-3xl">
             {title}
             <FavoriteButton recipeId={id} disabled={disableFavorite} />
           </CardTitle>

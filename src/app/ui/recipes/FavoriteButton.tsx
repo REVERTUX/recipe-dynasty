@@ -1,8 +1,10 @@
 'use client';
 
-import { type MouseEvent } from 'react';
-import { HiOutlineStar } from 'react-icons/hi2';
 import clsx from 'clsx';
+import { type MouseEvent } from 'react';
+import { LuHeart } from 'react-icons/lu';
+
+import { Button } from '@/components/ui/button';
 import { api } from '@/trpc/react';
 
 interface FavoriteButtonProps {
@@ -30,19 +32,20 @@ function FavoriteButton({ recipeId, disabled }: FavoriteButtonProps) {
 
   return (
     <div className="float-right">
-      <button
-        type="button"
+      <Button
+        size="icon"
+        variant="ghost"
         onClick={handleClick}
         disabled={disabled ?? (isLoading || isLoadingFavorite)}
         aria-label="favorite"
       >
-        <HiOutlineStar
+        <LuHeart
           size={24}
-          className={clsx('transition-colors', {
-            'fill-yellow-400 text-yellow-400': favorite,
+          className={clsx('text-red-400 transition-colors', {
+            'fill-red-400': favorite,
           })}
         />
-      </button>
+      </Button>
     </div>
   );
 }

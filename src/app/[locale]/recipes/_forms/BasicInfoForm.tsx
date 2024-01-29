@@ -41,7 +41,7 @@ function BasicInfoForm({ state, recipe }: BasicInfoFormProps) {
         defaultValue={recipe?.description}
         required
       />
-      <ImageForm />
+      <ImageForm url={recipe?.imageUrl ?? undefined} />
       <div className="flex flex-col gap-2 md:flex-row">
         <FormInput
           label={t('time')}

@@ -10,6 +10,7 @@ import { CreateRecipe, EditRecipe } from '@/app/lib/recipe/shema';
 import { allowOnlyInProduction, ratelimit } from '@/server/ratelimiter';
 import { TRPCError } from '@trpc/server';
 import { getLogger } from '@/utils/logger';
+import { userHasRole } from '@/server/auth';
 import { RecipePaginationShema } from '../schema';
 
 const logger = getLogger();
@@ -19,19 +20,26 @@ export const recipeRouter = createTRPCRouter({
     .input(CreateRecipe)
     .mutation(async ({ ctx, input }) => {
       const { nutrients, cookingTime } = input;
+      const userId = ctx.session.user.id;
 
       if (allowOnlyInProduction()) {
-        const { success } = await ratelimit.createRecipe.limit(
-          ctx.session.user.id
-        );
+        const { success } = await ratelimit.createRecipe.limit(userId);
         if (!success) {
           logger.warn('Rate limit: create recipe', {
-            userId: ctx.session.user.id,
+            userId,
           });
           throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
         }
       }
-      logger.info('Creating recipe', { userId: ctx.session.user.id });
+
+      if (!userHasRole(ctx.session, 'MEMBER')) {
+        logger.error('User tried to create recipe without valid rights', {
+          userId,
+        });
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      logger.info('Creating recipe', { userId });
 
       const recipe = await ctx.db.recipe.create({
         data: {
@@ -40,7 +48,7 @@ export const recipeRouter = createTRPCRouter({
           calories: input.calories,
           servings: input.servings,
           imageUrl: input.imageUrl,
-          userId: ctx.session.user.id,
+          userId,
           categories: {
             createMany: {
               data: input.categories.map((category) => ({
@@ -61,7 +69,7 @@ export const recipeRouter = createTRPCRouter({
       });
 
       logger.info('Created recipe', {
-        userId: ctx.session.user.id,
+        userId,
         recipeId: recipe.id,
       });
 

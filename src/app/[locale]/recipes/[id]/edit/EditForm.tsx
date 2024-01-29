@@ -51,9 +51,11 @@ function EditForm({ recipe, steps, recipeId }: EditFormProps) {
   return (
     <form
       action={dispatch}
-      className="flex max-w-5xl grow flex-col gap-4 px-2 py-4"
+      className="flex max-w-5xl grow flex-col gap-2 px-2 py-4 md:gap-4"
     >
-      <h1 className="mb-4 text-4xl font-bold">{t('editTitle')}</h1>
+      <h1 className="mb-2 text-3xl font-bold md:mb-4 md:text-4xl">
+        {t('editTitle')}
+      </h1>
       <BasicInfoForm state={state} recipe={recipe} />
       <CategoriesForm
         categories={recipe?.categories ?? []}

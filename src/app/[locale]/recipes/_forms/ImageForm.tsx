@@ -3,6 +3,8 @@
 
 import { type ChangeEvent, useState, useRef } from 'react';
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
+import Image from 'next/image';
+import { TbCloudUpload } from 'react-icons/tb';
 
 import { useUploadThing } from '@/utils/uploadthing';
 import { cropImage } from '@/utils/cropImage';
@@ -38,6 +40,7 @@ function ImageForm({ url }: ImageFormProps) {
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
   const [imageName, setImageName] = useState<string>('');
   const imageRef = useRef<HTMLImageElement>(null);
+  const imageUploadRef = useRef<HTMLInputElement>(null);
   const { startUpload, isUploading } = useUploadThing('imageUploader', {
     onClientUploadComplete(res) {
       setImageUrl(res?.[0]?.url);
@@ -63,6 +66,7 @@ function ImageForm({ url }: ImageFormProps) {
       } else {
         // TODO handle unsupported file
       }
+      if (imageUploadRef.current) imageUploadRef.current.value = '';
     }
   };
 
@@ -93,53 +97,38 @@ function ImageForm({ url }: ImageFormProps) {
       <input type="text" name="imageUrl" value={imageUrl} hidden />
       <label
         htmlFor="dropzone-file"
-        className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:bg-background dark:hover:bg-slate-800"
+        className="flex h-72 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:bg-background dark:hover:bg-slate-800"
       >
-        <div className="flex flex-col items-center justify-center pb-6 pt-5">
-          {!imageUrl ? (
+        <div className="relative flex h-full w-full flex-col items-center justify-center">
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt="uploaded"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
             <>
-              <svg
-                className="mb-4 h-8 w-8 text-gray-500"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 16"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                />
-              </svg>
+              <TbCloudUpload className="mb-4 h-10 w-10 text-gray-500" />
               <p className="mb-2 text-sm text-gray-500">
-                <span className="font-semibold">{t('upload')}</span>
+                <span className="font-semibold">{t('uploadClick')}</span>
               </p>
               <p className="text-xs text-gray-500">{t('files')}</p>
             </>
-          ) : (
-            <div>
-              <span className="font-semibold">
-                {t('uploaded')}: {imageName}
-              </span>
-            </div>
           )}
         </div>
         <input
           id="dropzone-file"
           type="file"
           className="hidden"
+          ref={imageUploadRef}
           accept={acceptedFiletypes.join(', ')}
           onChange={handleImageChange}
         />
       </label>
       <Dialog open={isModalOpen} onOpenChange={handleModalToggle}>
-        {/* <DialogTrigger>
-
-        </DialogTrigger> */}
         <DialogContent>
-          <DialogTitle>Resize Image</DialogTitle>
+          <DialogTitle>{t('resize')}</DialogTitle>
           <DialogDescription>
             {imageSrc ? (
               <ReactCrop
@@ -159,16 +148,16 @@ function ImageForm({ url }: ImageFormProps) {
               <p>No image selected</p>
             )}
           </DialogDescription>
-          <DialogFooter className="flex justify-end gap-1">
+          <DialogFooter className="flex justify-end gap-2">
             <Button
               variant="secondary"
               onClick={() => handleModalToggle(false)}
               disabled={isUploading}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button onClick={handleImageUpload} disabled={isUploading}>
-              {isUploading ? 'Uploading...' : 'Upload'}
+              {isUploading ? `${t('uploading')}...` : t('upload')}
             </Button>
           </DialogFooter>
         </DialogContent>
