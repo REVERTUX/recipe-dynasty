@@ -21,4 +21,6 @@ export const PaginationShema = z.object({
 export const RecipePaginationShema = PaginationShema.extend({
   categories: z.string().array().optional(),
   favorite: z.boolean().optional(),
+  sortBy: z.string().optional(),
+  orderBy: z.enum(['asc', 'desc']).optional(),
 });
