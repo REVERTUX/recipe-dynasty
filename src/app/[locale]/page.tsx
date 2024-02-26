@@ -1,5 +1,11 @@
-export default async function Home() {
+import dynamic from 'next/dynamic';
+
+const NewestRecipes = dynamic(() => import('./newest-recipes'));
+
+export default async function Page() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white"></main>
+    <main className="flex min-h-[calc(100vh-9rem)] flex-col items-center p-2 md:px-4 md:py-4">
+      <NewestRecipes />
+    </main>
   );
 }

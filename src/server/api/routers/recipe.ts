@@ -244,7 +244,10 @@ export const recipeRouter = createTRPCRouter({
   getList: publicProcedure
     .input(RecipePaginationShema)
     .query(
-      async ({ ctx, input: { search, skip, take, categories, favorite } }) => {
+      async ({
+        ctx,
+        input: { search, skip, take, sortBy, orderBy, categories, favorite },
+      }) => {
         const where: Prisma.RecipeWhereInput = {
           title: { contains: search, mode: 'insensitive' },
           categories: {},
@@ -262,7 +265,7 @@ export const recipeRouter = createTRPCRouter({
         const data = await ctx.db.recipe.findMany({
           skip,
           take,
-          orderBy: { creationDate: 'desc' },
+          orderBy: getListSortBy(sortBy, orderBy),
           where,
           include: {
             categories: true,
@@ -305,3 +308,17 @@ export const recipeRouter = createTRPCRouter({
       });
     }),
 });
+
+type RecipeOrderBy = keyof Prisma.RecipeOrderByWithRelationInput;
+
+function getListSortBy(
+  field: string | undefined,
+  order: Prisma.SortOrder = 'desc'
+): Prisma.RecipeOrderByWithRelationInput {
+  const availableFields: RecipeOrderBy[] = ['creationDate', 'title'];
+  if (!field || !availableFields.includes(field as RecipeOrderBy)) {
+    return { creationDate: order };
+  }
+
+  return { field: order } as Prisma.RecipeOrderByWithRelationInput;
+}

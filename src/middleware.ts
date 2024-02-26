@@ -8,7 +8,14 @@ const I18nMiddleware = createI18nMiddleware({
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  if (['/manifest.json', '/favicon.ico', '/logo.png'].includes(pathname))
+  if (
+    [
+      '/manifest.json',
+      '/favicon.ico',
+      '/logo.png',
+      '/img-placeholder.png',
+    ].includes(pathname)
+  )
     return;
 
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
